@@ -1,0 +1,56 @@
+---
+sidebar_position: 4
+sidebar_label: "Hero Card: Unused Services"
+title: "Hero Card: Unused Services"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+## Overview
+
+<img className="noborder" src="/svg/cpf/intro-to-services/services.svg"></img>
+
+Unused services provide an easy way for attackers to create and modify resources, as well as an unintentional method of internal employees driving up costs by using services which have not been authorized by the business. 
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/37F92706-BBAD-4A37-95D1-F75BBA038037.png"></img>
+
+---
+
+### Examples
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Example 1: When Outsiders Become Insiders" label="Example 1: When Outsiders Become Insiders"> 
+<h4 className="tabheader hiddenheader">Example 1: When Outsiders Become Insiders</h4>
+
+One day, an attacker socially engineered their way into an AWS organization. 
+
+With the role to which they had gained access, they discovered an unused service, Amazon RDS. Within it, they were able to launch a stagnant RDS instance that had not been updated for several months and lacked recent security patches. Exploiting the present vulnerabilities, the attacker was able to gain unauthorized access to the organization's database.
+
+With this access, the attacker explored the company's cloud infrastructure and quickly located sensitive patient data stored in an unprotected database. The attacker began exfiltrating this data and attempted to cover their tracks by modifying logs and access permissions.
+
+</TabItem>
+<TabItem value="Example 2: When Insiders Cause Problems" label="Example 2: When Insiders Cause Problems"> 
+<h4 className="tabheader hiddenheader">Example 2: When Insiders Cause Problems</h4>
+
+A company began experiencing unexpected service outages and performance issues in its network management systems. Customers reported difficulties accessing certain features and functions, while internal teams struggled with unexplained delays in processing data.
+
+The IT team immediately began investigating the source of the issues. After a thorough review of the cloud environment, they traced the problem to a set of inactive services with scheduled lambda functions that had remained enabled but unused for several months. These services were once vital components of older applications but had since been replaced by newer, more efficient versions. However, the old services were never fully shut down and remained referenced by the system. 
+
+</TabItem>
+</Tabs>
+</div>
+
+---
+
+## Disable Your Unused Services 
+
+Select the scope at which you want to take action and click the preview button to see the changes you are about to make:
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/18E9A668-6B0B-4281-805F-379502D3A0D2.png"></img>
+
+When ready, click the <button className="cpfgreenbutton">Disable</button> button to review those changes within the <a href="/cpf/permissions-firewall/pending-changes/pending-changes-intro">Pending Changes</a> page before you deploy them to your cloud:
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/9954B820-EB28-4C16-B02B-A30E5F51DAC8.png"></img>

@@ -1,0 +1,41 @@
+---
+sidebar_position: 2
+sidebar_label: "Managing POD Request Approvers"
+title: "Managing POD Request Approvers"
+---
+
+
+## Overview 
+
+Permissions on Demand (POD), requires a defined listing of **Approvers**. This list provides a means to allow your organization to extend permission approval to those who have suitable authority and knowledge to authorize usage.
+
+The list of Approvers defined within the Cloud Permissions Firewall are **not required** to have any associated privileges within your cloud estate to mutate the respective <a href="/cpf/permissions-firewall/services/#common-controls">Cloud Controls</a> or change any cloud access, this is simply about change management!
+
+--- 
+
+## Prerequisites 
+
+<div className="tealborder">
+
+The "**CPF Administrator**" <a href="/manage/roles/rbac-roles#role-administration">RBAC role</a> is required for assigning/removing Approvers. 
+
+</div>
+
+---
+
+## Adding Approvers 
+
+You can add Approvers at any scope be it Organization, OU, or specific AWS Account.
+
+<u>Example</u>: LoanAppDev OU
+
+<img src="/img/cpf/permissions-firewall/approvers/C392AB84-127C-4EF2-B1C4-E4E6AECAB030.png" alt="The main Approvers page, scoped to display an OU."></img>
+
+As indicated on the right-hand side of the row (i.e. the user addition icon), Approvers can be added directly to the OU (i.e. applied to all nested Accounts), or to any of the nested Accounts individually. 
+
+<img src="/img/cpf/permissions-firewall/approvers/960C7918-4C3F-4442-8D8F-44120C8DF877.png" alt="Once the user addition icon is clicked, this 'Assign Approvers' window displays, allowing further Approver assignment or removals."></img>
+
+Check the box within the Suggestions list or input an email address to add an Approver.
+
+Similary, uncheck the box or click the 'x' icon for an Approver will remove them from the list (once <button>Save</button> is clicked).
+

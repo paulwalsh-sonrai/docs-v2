@@ -1,0 +1,298 @@
+---
+title: User Management
+sidebar_position: 2
+
+---
+
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+
+## Inviting Users 
+
+<div className="grid-container2">
+<div className="grid-child">
+
+<Icon icon="fa-user fa-user" ></Icon> Users can be managed by navigating to the [Users](https://app.sonraisecurity.com/App/UserManagement) tab within the lefthand menu.  
+
+To send the invitation, the user's email address and at least one role must be input into the form. Once sent, users will remain in “pending” status until the invitation is accepted.
+
+<br/>
+
+:::info
+<Icon icon="fa-at fa-at" ></Icon> Only valid email addresses can be used with the Sonrai Platform. Addresses which cannot accept email are not supported (this applies to users utilizing local Sonrai authentication and external SSO integration)
+
+<Icon icon="fa-circle-user fa-circle-user" ></Icon> Organizations are permitted to have up to 25 accounts by default (contact Support and the limit can be increased)
+:::
+
+</div>
+<div className="grid-child">
+<img src="/img/manage/roles/0AB17AE4-2C23-4EDA-9B35-B8347AE2A585.png" style={{width: 'auto', height: '400px'}}></img>
+</div>
+</div>
+
+### Automating User Invitations
+
+Leverage the "**Send Validation Email**" setting at the top of the form to assist in automating user invitations. 
+
+Unchecking the "**Send Validation Email**" setting will **not** send a user validation email and it will hide the “CC myself on the email” checkbox.
+
+:::info
+If required, supplying invalid domains (<u>Example</u>: `joe.smith@exampleinvalid.domain.testing`) in general email address format [with "**Send Validation Email**" unchecked] is supported. 
+:::
+
+To script user invitation automation using GraphQL:
+
+```graphql title="User Invitation Mutation" showLineNumbers
+mutation createInvite {
+  CreateSonraiInvites(
+    input: {
+      email: "joe.smith@exampleinvalid.domain.testing"
+      name: "Joe Smith"
+      ccInviterOnEmail: true
+      expiryTimeInSeconds: 1143500
+      sendEmail: false
+    })
+  {
+    items{
+      srn
+    }
+  }
+}
+```
+
+
+### Authentication & Password Policy
+
+#### Single Sign-On (SSO)
+
+##### Password & MFA Token Resets
+
+Authentication and password/MFA token resets are handled through your organization's <a href="/manage/users/single-sign-on">SSO</a> platform. 
+
+<hr className="hrsmall"></hr>
+
+#### Local Sonrai Password/MFA
+
+<div className="grid-container2" style={{'grid-gap':'30px'}}> 
+<div className="grid-child 1">
+
+For users who have **local passwords** [i.e., are not leveraging SSO], password and MFA settings are managed by Sonrai's Auth0 password management. 
+<br/>
+
+##### Password Requirements
+
+- 10 character minimum length
+- At least 3 of the following:
+ - Lower case letters (a-z)
+ - Upper case letters (A-Z)
+ - Numbers (0-9)
+ - Special characters <code>( ex.!@#$%^&*)</code>
+
+- No more than 2 identical characters in a row
+- Previous 5 passwords cannot be reused
+<br/>
+*Multi-factor authentication is required for local (non-SSO) users
+<br/>
+
+##### Resetting Passwords
+
+To reset a password: 
+<ul>
+<li>
+Navigate to <a href="https://app.sonraisecurity.com/">https://app.sonraisecurity.com/</a>
+</li>
+<li>
+Enter the user's email address
+</li>
+<li>
+Click the "<b>Forgot password?</b>" link 
+</li>
+<li>
+Click <button>Continue</button> and check the email inbox for the password reset link
+</li>
+</ul>
+<img src="/img/manage/users/image-20220415155857361.png"></img>
+</div>
+<div className="grid-child 2">
+<img className="seventypercent" src="/img/manage/roles/7CBC9259-5944-4294-96FA-7805DF704BA2.png"></img>
+<br/>
+
+*Check your spam folder if the email is not received within a few minutes! 
+
+<br/>
+<img src="/img/manage/users/image-20220415155904768.png"></img>
+<br/>
+<br/>
+
+##### Resetting MFA Tokens
+
+Local (non-SSO) MFA token resets can **only** be completed through submitting a <a href="https://sonraisecurity.atlassian.net/servicedesk/customer/portals">Support Ticket</a>. 
+
+</div>
+</div>
+
+##### Failed Login Attempts
+
+If a user enters their password incorrectly more than 10 times from a single IP address, they will be blocked from logging into that account from that IP address. This can block can be removed manually by Sonrai by changing your password, or by clicking the “Unblock” link in the email notification sent to the blocked account. 
+
+<div className="cpfreference smallfont">
+<div className="indent1 refbody">
+<Icon icon="fa-solid fa-user-xmark" ></Icon> <u>Reference</u>: For more details on failed login monitoring & disabling, refer to <a href="https://auth0.com/docs/anomaly-detection/references/brute-force-protection-triggers-actions">Auth0 - Brute Force Protection documentation</a>.
+</div>
+</div>
+
+---
+
+### Changing the Default Invitation Timeout Period
+
+By default, Sonrai user invitations are valid for 5 days, and afterwards, invitations must be resent. This default invitation expiration can be set to a larger value by using the following mutation in [Advanced Search](https://app.sonraisecurity.com/App/GraphExplorer):
+
+Standard timeout values for consideration include:
+- 30 days -> `2592000`
+- 60 days -> `5184000`
+- 90 days -> `7776000`
+- 120 days -> `10368000`
+- 180 days -> `15552000`
+
+:::warning
+Do not set the timeout value to exceed 6 months.
+:::
+
+To view the current timeout value:
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Example Query" label="Example Query"> 
+<h4 className="tabheader hiddenheader">Example Query</h4>
+
+```graphql title="Example Query" showLineNumbers
+query getSonraiOrgConfig {
+    SonraiOrgConfig {
+        metadata
+    }
+}
+```
+
+</TabItem>
+<TabItem value="Example Query Return" label="Example Query Return"> 
+<h4 className="tabheader hiddenheader">Example Query Return</h4>
+
+```graphql title="Example Query Return" showLineNumbers
+{
+  "data": {
+    "SonraiOrgConfig": {
+      "metadata": {
+        "ui/preferences/analyticsWindowDays": "2",
+        "ui/preferences/grantedDateGracePeriod": "3"
+      }
+    }
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+</div>
+
+
+To change the current value to a new one:
+
+```graphql title="Example Mutation" showLineNumbers
+mutation setOrgInviteDefaultExpiry {
+    UpdateOrgConfigMetadata(metadata: [
+    {
+        keyName: "ui/preferences/defaultInviteTimoutDurationSeconds"
+        keyValue: "7776000"
+    }
+    ]) {
+        metadata
+    }
+}
+```
+
+
+---
+
+## Managing Existing Users
+
+### Name / Role Changes
+
+Once a user has been added to the Sonrai platform, their name and role(s) can be managed from the user's profile.
+
+To edit a user's details, click on their name in the [All Users](https://app.sonraisecurity.com/App/UserManagement) management screen: 
+
+To edit a user's name, click the pencil icon.
+
+To manage a pending user invitation, select <button>Edit Role Assignments</button> for the invitation. Alternatively, you can cancel or resend the invitation email. 
+
+:::tip
+The **User Management** and **User Activity** screens provide a filter to quickly find a user, pending invitation, or logged event: 
+
+![](/img/manage/roles/49767ca7-71a2-44f0-bd8b-2e68898e8660.016.png)
+:::
+
+To add or modify a role for the selected user, click <button>Manage Roles</button> from the user's profile, and add or remove roles as needed.
+
+A user's name can also be changed through API calls, if needed.
+
+- Within the browser **Developer Tools**, navigate to the **Network tab**
+
+- Log in to your environment
+
+- Within the browser **Developer Tools**, click on one of the **graphql** calls, then the "**Headers**" tab. Within the **Request Headers**, copy the **Bearer Token**:
+
+<img className="sixtypercent" src="/img/manage/users/144F8E14-62D6-4756-984D-2B1B5779E736.png"></img>
+
+- Using whichever method you like, submit a POST request for a GraphQL mutation similar to the following example: 
+
+```graphql title="Example Mutation"
+mutation UpdateSonraiCurrentUsers {
+    UpdateSonraiCurrentUsers(input: { name: "newName" }) {
+        count
+        items {
+            name
+        }
+    }
+}
+
+```
+
+<img src="/img/manage/users/A54E1FDB-346D-434A-BAD8-9D41B02E7CF5.png"></img>
+
+:::tip
+See [here](/api/sonrai-graphql-api#postman) for guidance on setting up Postman
+:::
+
+
+---
+
+## Disabling Users
+
+For audit purposes, users are not deleted from Sonrai.  
+
+Instead, we recommend users are disabled and the privileges removed from the user account.  
+
+This ensures that the user cannot login, and if for some reason the account was re-activated, that the user has no active permissions. 
+
+<img src="/img/manage/roles/800D5CAA-7FA6-4F9C-8FA7-B2B475E3A0B7.png" style={{width: '50%'}}></img>
+
+---
+
+## Viewing User Activity Logs 
+
+The Sonrai platform maintains a user activity log that can be accessed from the [All Users](https://app.sonraisecurity.com/App/UserManagement) screen, "**User Activity Logs**" link: 
+
+![](/img/manage/roles/DAD4C5A2-8A3D-425E-89A0-034A2038C917.png)
+
+User activity logs can be exported to CSV format via the *Table Actions* feature on the **User Activity** screen. 
+
+![](/img/manage/roles/FE89CA3F-E8A8-4237-B896-E91447CD59E8.png)
+
+
+<div className="blueborder smallfont">
+<Icon icon="fa-solid fa-user" ></Icon> <u>Reference</u>: See <a href="/overview/user-activity-audit-log">here</a> for more detailed information for searching user activity.
+</div>

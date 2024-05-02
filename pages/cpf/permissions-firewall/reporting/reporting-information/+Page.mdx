@@ -1,0 +1,120 @@
+---
+sidebar_position: 1
+sidebar_label: "Reporting/Audit Information"
+title: "Reporting/Audit Information"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Overview
+
+The Reporting section provides an overview of exceptions/exemptions that have been implemented for specific accounts (authorized users, break glass accounts, etc.) and a detailed audit log tracking user interactions with the Cloud Protection Firewall. 
+
+<img src="/img/cpf/reporting/5393D36A-2CA3-481E-9EC1-B666293C3FB9.png"></img>
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Exception List" label="Exception List"> 
+<h4 className="tabheader hiddenheader">Exception List</h4>
+
+<div className="purpleborder grid-container6">
+<div className="grid-child">
+**Exception** 
+<br/>
+The identity for which the exception/exemption has been made
+</div>
+<div className="grid-child">
+**Service**
+<br/>
+The service for which the exception applies
+</div>
+<div className="grid-child">
+**Approval Date**
+<br/>
+The date/time at which the approval has been granted
+</div>
+<div className="grid-child">
+**Approver**
+<br/>
+The Approver who authorized the exception/exemption
+</div>
+<div className="grid-child">
+**Permissions**
+<br/>
+The sensitive permissions which were approved for use by the identity 
+</div>
+<div className="grid-child">
+**Scope**
+<br/>
+The scope at which the service's sensitive permissions apply for the identity in question
+</div>
+</div>
+
+</TabItem>
+<TabItem value="Detailed Audit Log" label="Detailed Audit Log"> 
+<h4 className="tabheader hiddenheader">Detailed Audit Log</h4>
+
+<div className="purpleborder grid-container4">
+<div className="grid-child">
+**Action** 
+<br/>
+The action that was taken by a Cloud Permissions Firewall (CPF) user
+</div>
+<div className="grid-child">
+**Actioned By**
+<br/>
+The user that completed an action 
+</div>
+<div className="grid-child">
+**Scope**
+<br/>
+The scope at which the action occurred
+</div>
+<div className="grid-child">
+**Date**
+<br/>
+The date on which the action occurred
+</div>
+</div>
+
+</TabItem>
+</Tabs>
+</div>
+
+---
+
+## Exception List 
+
+Exemptions will be made for identities within your organization which require continued access to sensitive permissions, and those exempted identities will be listed for reference on this Reporting page.
+
+Some of these identity exemptions will be facilitated through the Services slide-in panel for a specific service/account, while other exemptions will be made through Permissions on Demand (POD) requests. 
+
+The roll-up widgets provide metrics for top trending POD requests (involved user, service, scope) and request approvals versus denies. 
+
+
+### Sensitive Permissions Identity Exemptions 
+
+When you protect a service, you can add exemptions to each account in scope to ensure no disruption in operations occurs. The most common use case(s) include machine identities used to deploy infrastructure or break glass identities.
+
+<div className="blueborder smallfont">
+<u>Reference</u>: See <a href="/cpf/permissions-firewall/services/how-to-service-protections#exempting-an-identity">here</a> for more information on the "**Protecting Services & Exempting Identities**" page.
+</div>
+
+--- 
+
+## Detailed Audit Log 
+
+Along with stating the action that occurred, the user that performed the action, the scope at which the action was performed, and the date and time at which the action occurred is present for each table row to provide you with a contextual timeline of events.
+
+When viewing the audit log, below are some inclusions you may encounter: 
+
+| Action | Description |
+| -- | -- | 
+| `CreateControlMapping` |  A service has been protected or disabled |
+| `DeleteControlMapping` |  A service has been unprotected | 
+| `AddExceptionIdentity` | An identity has been exempted from a service protection | 
+| `RemoveExceptionIdentity` | A previously exempted identity has been removed from a protected service exemptions list | 
+| `SubmitControls` | The "Pending Changes" are translated to the CloudFormation template (`json` file) | 
+
+The time range can be changed using the filter in the top right hand corner to quickly narrow down results. 

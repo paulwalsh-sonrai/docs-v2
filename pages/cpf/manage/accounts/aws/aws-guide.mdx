@@ -1,0 +1,307 @@
+---
+title: AWS Configuration Guide
+sidebar_position: 1
+---
+
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+
+## Overview
+
+This guide explains how to configure appropriate permissions in AWS and add Accounts to enable Sonrai's full cloud monitoring capabilties.
+
+See below for details on Sonrai's Cloud Permissions Firewall Permissions on Demand role, in particular: 
+
+<div className="expansionwrapper">
+<input type="checkbox" id="checkbox" className="expandp"></input>
+<div id="hidden">
+
+```json title="Permissions on Demand" showLineNumbers
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "iam:ListUsers",
+                "iam:ListGroups",
+                "iam:ListRoles",
+                "iam:GetUser",
+                "iam:GetGroup",
+                "iam:GetRole",
+                "iam:ListUserTags",
+                "iam:ListGroupsForUser",
+                "iam:ListRoleTags",
+                "iam:ListPolicies",
+                "iam:CreateServiceLinkedRole"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "readForTag"
+        },
+        {
+            "Condition": {
+                "ForAllValues:StringEquals": {
+                    "aws:TagKeys": [
+                        "cpf",
+                        "sonrai-cops",
+                        "cpf-z"
+                    ]
+                }
+            },
+            "Action": [
+                "iam:TagUser",
+                "iam:TagRole",
+                "iam:UntagUser",
+                "iam:UntagRole"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "tagManagement"
+        },
+        {
+            "Action": [
+                "iam:GetRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListRolePolicies",
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*"
+            ],
+            "Effect": "Allow",
+            "Sid": "iamPermissions"
+        },
+        {
+            "Action": [
+                "sso:DetachCustomerManagedPolicyReferenceFromPermissionSet",
+                "sso:AttachCustomerManagedPolicyReferenceToPermissionSet",
+                "sso:ListAccountsForProvisionedPermissionSet",
+                "sso:ListCustomerManagedPolicyReferencesInPermissionSet",
+                "sso:ProvisionPermissionSet"
+            ],
+            "Resource": [
+                "arn:aws:sso:::permissionSet/*",
+                "arn:aws:sso:::account/*",
+                "arn:aws:sso:::instance/*"
+            ],
+            "Effect": "Allow",
+            "Sid": "ssoPermissions"
+        },
+        {
+            "Action": [
+                "ce:GetDimensionValues"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "usage"
+        },
+        {
+            "Action": [
+                "iam:ListPolicyVersions",
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:SetDefaultPolicyVersion",
+                "access-analyzer:ValidatePolicy"
+            ],
+            "Resource": [
+                "arn:aws:iam::211125749341:policy/SonraiCMP*"
+            ],
+            "Effect": "Allow",
+            "Sid": "updateCMPs"
+        },
+        {
+            "Action": [
+                "secretsmanager:*"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:*:211125749341:secret:sonrai-*"
+            ],
+            "Effect": "Allow",
+            "Sid": "secretManagement"
+        },
+        {
+            "Action": [
+                "kms:*"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "kmsManagement"
+        },
+        {
+            "Action": [
+                "cloudformation:ListStacks",
+                "cloudformation:DescribeStacks",
+                "organizations:DescribeAccount",
+                "account:ListRegions"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow",
+            "Sid": "readonly"
+        }
+    ]
+}
+```
+
+</div>
+</div>
+
+### Pre-Deployment Prerequisites
+
+<div className="grid-container2">
+<div className="grid-child tealborder">
+
+<h5><Icon icon="fa-solid fa-file-circle-exclamation" alt="" aria-hidden="true" style={{color: 'red'}}></Icon> Required</h5>
+
+Review/implement the required prerequisites before progressing onto Account configuration:
+- <a href="/cpf/manage/accounts/prerequisites#prerequisites-common-across-cloud-types">Cloud Agnostic Prerequisites</a>
+- <a href="/cpf/manage/accounts/prerequisites#aws-specific-prerequisites">AWS-Specific Prerequisites</a>
+
+</div>
+</div>
+
+
+---
+
+## Creating the Collector Role(s) & Adding Accounts
+
+<div className="grid-container2">
+<div className="grid-child">
+
+To grant Sonrai access into the Accounts for monitoring, a role will need to be created in each Account for Sonrai to assume. This involves the creation of the role itself, as well as assignment of the trust policy to create the relationship between Sonrai's Account and the Account to be monitored.  
+
+It is required for roles to be deployed at the top of the hierarchy (i.e. at the Org level) to ensure complete visibility and the most accurate assessment. 
+
+</div>
+<div className="grid-child">
+
+With onboarded Orgs comes automated management for addition/removal of associated child Accounts, negating the need for you to manually review and onboard/offboard going forward.
+
+:::tip
+We recommend you log in to each AWS Account to be added prior to starting the onboarding process within the Sonrai UI. 
+:::
+
+</div>
+</div>
+
+> What can expect for the first deployment? 
+
+By design, when an AWS Organization is first onboarded, a Customer Managed Policy (CMP) is created in each account regardless of whether Cloud Controls are being deployed. **This activity may cause CloudWatch alerts, depending on your configuration!**
+
+On subsequent cloud configuration change deployments, those existing CMPs wll be modified. New CMPs will be created for new permission sets if additional accounts are added to your Organization over time. 
+
+> How do I onboard an AWS Organization to the Accounts section of the Cloud Permissions Firewall (CPF)?
+
+1. In the left-hand navigation menu, click <b><a className="hyperlite" href="https://app.sonraisecurity.com/App/Accounts">Manage > Accounts</a></b>
+
+2. Click <button>**+Add Account**</button> to spur the quick start wizard
+
+3. Select the **Amazon Web Services** tab and click <button>**Next**</button>
+
+<div className="tealborder">
+
+<img src="/img/aws/aws.png" className="circleiconborder" aria-hidden="true"></img>
+<b className="indent1" style={{'font-size':'20pt'}}><a href="/accounts/aws/aws-guide">AWS Organizations</a></b>
+<br/>
+<br/>
+Adding an <b>Organization-level Account</b> conveniently allows for deployment of roles in all Accounts at once.<br/>
+
+Role name(s) used with the Sonrai Collector(s) are **not required** to be prefixed with "*sonrai-*, they can follow any naming convention in use within your organization
+
+<div className="grid-container">
+<div className="grid-child optionalaquaborder">
+<h3>Sonrai Role Creation <b><i>[Recommended Method]</i></b></h3>
+<Icon icon="fa-solid fa-1" className="centeredicontext numicon" alt="Step 1"></Icon> Log in to your AWS Organization Account<br/><br/>
+<Icon icon="fa-solid fa-2" className="centeredicontext numicon" alt="Step 2"></Icon> Using Sonrai's provided CloudFormation template, create the Collector role (which includes <code>ReadOnlyAccess</code>, <code>AmazonElasticContainerRegistryPublicReadOnly</code>, and <code>AWSSSODirectoryReadOnly</code> permissions)
+
+The CloudFormation template configures:
+<ul>
+<li>Sonrai's provided trust policy</li>
+<li><code>SonraiSecurityStackSet</code> creation to deploy to all the nested child Accounts<br/>(<i>*The StackSet is not deployed in this step, simply created</i>)</li>
+</ul>
+<Icon icon="fa-solid fa-3" className="centeredicontext numicon" alt="Step 3"></Icon> Add the Sonrai Collector role ARN in the Sonrai platform & click to validate the ARN<br/>
+<i>*You may be required to click "Enable trusted access" to continue</i><br/><br/>
+<Icon icon="fa-solid fa-4" className="centeredicontext numicon" alt="Step 4"></Icon> In AWS, deploy the <code>SonraiSecurityStackset</code> as directed in the Sonrai UI onboarding wizard (see photos within the expansion pane for configuration details) <br/><br/>
+<Icon icon="fa-solid fa-5" className="centeredicontext numicon" alt="Step 5"></Icon> In the Sonrai UI, once all above actions are completed, click "<b>Done</b>" to finish the onboarding wizard
+<div className="expansionwrapper">
+<input type="checkbox" id="checkbox" className="expandsv"></input>
+<div id="hidden">
+<br/>
+<b>Supplementary visuals</b>
+<br/><br/>
+From the Sonrai platform, clicking the CloudFormation link will transport you to the AWS console:
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/3EDB51C3-4FA6-4B64-AEE8-C12862CD8BD9.png" alt="The CloudFormation Template link within Sonrai's quick start onboarding wizard, within the second step entitled 'Create an IAM role and policy'"></img>
+<br/><br/>
+Modify the template to completion to suit your needs, at least toggling the "<b>Permissions on Demand</b>" option to "<b>Yes</b>":
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/937534F2-F93D-4D54-A814-F76A533EEB4A.png" alt="The CloudFormation template step 1, 'Create stack', with the 'Template is ready' and 'Amazon S3 URL' toggles pre-checked and the S3 URL field prefilled for you."></img>
+<br/>
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/406E1E86-5C31-45FC-9226-DCEF519495EB.png" alt="The CloudFormation template step 2, 'Specify stack details', with the default settings enabled (image 1, no changes are required to the default values before clicking the next button)."></img>
+<br/>
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/79616DE0-6E06-4621-AE1E-3AD4497E1BC3.png" alt="The CloudFormation template step 2, 'Specify stack details', with the default settings enabled (image 2 scrolled further down the page - ensure the 'Permissions on Demand' field is set to 'Yes', the rest of the fields can remain as default values before clicking the next button)."></img>
+<br/>
+
+:::info
+**Assumed Role External ID** - When Sonrai's collector connects to the assumed role, it provides an external ID during authentication. When creating your roles, including this external ID allows for further control of access to the role. 
+:::
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/93A8B6EE-66F5-46C5-BDAA-762BC4C454B6.png" alt="The CloudFormation template step 3, 'Configure stack options', where no changes to the default values are required before clicking the next button."></img>
+<br/>
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/156A24DA-EA8B-4891-BCEA-79E17500B4B4.png" alt="The CloudFormation template step 4, 'Review' (image 1), where no changes are required."></img>
+<br/>
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/E36BD5ED-F890-4DA1-8B43-B922097F4BA5.png" alt="The CloudFormation template step 4, 'Review' (image 2, scrolled further down the page), where no changes are required before clicking the next button."></img>
+<br/><br/>
+Once the stack has been created, navigate to the "<b>Output</b>" tab to find the Collector ARN to copy:
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/6F944D61-146B-45B2-A0FC-16826C18CB88.png" alt="The CloudFormation template output, from which the CollectorRoleArn value can be copied."></img>
+<br/><br/>
+Once the ARN is input, click <button>Validate ARN</button>:
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/A1FDB222-5200-4EA1-BC2C-79A43D6CA7D8.png" alt="The Sonrai onboarding wizard, 'Connect Your Account to Sonrai Security' step > 'Sonrai Collector Role ARN' field where you can paste in your previously copied value then click the 'Validate ARN' button."></img>
+<br/><br/>
+Next, locate the newly created StackSet within the AWS Console:
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/A6139BCA-6C43-47D7-B3A4-DCE6F756B95A.png" alt="In AWS Console, the StackSets page with the Sonrai StackSet Id highlighted."></img>
+<br/><br/>
+Click the "<b>Add Stacks to StackSet</b>" menu option.
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/63E9ED32-601F-4370-9A6D-D81A798FD510.png" alt="In AWS Console, the 'Action' menu is clicked to reveal its menu options, including 'Add Stacks to StackSet'."></img>
+<br/><br/>
+Configure as follows, adding any region of your choice:
+- **Maximum concurrent accounts**: Percentage, 100
+- **Failure tolerance**: Percentage, 100
+- **Region concurrency**: Parallel
+- **Concurrency mode**: Strict failure tolerance
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/8548787C-7D1A-47CD-BCA0-6CFA110B23F1.png" alt="In AWS Console Step 1, 'Set deployment options', a region of your choice is selected and the 'Deployment options' are set."></img>
+<br/>
+Click <button>Next</button>, then <button>Next</button> again (no overrides necessary for Step 3):
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/553682FF-13AB-48A7-ADFD-70A0BCA6E809.png" alt="In AWS Console step 2, 'Specify overrides', no fields contain any override."></img>
+<br/><br/>
+Review and click <button>Submit</button> at the bottom of the page on the right-hand side:
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/3B566C01-5F84-4819-A7E3-D1A1383BE035.png" alt="In AWS Console step 3, 'Review', the summary of deployment settings are shown prior to a user clicking the submission button to initialize the stack addition to the StackSet."></img>
+<br/><br/>
+Once the StackSet has been properly configured, click <button>Done</button> back within the Sonrai platform:
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/C270101B-6068-41EA-BB9E-60C5784B9E1A.png" alt="In AWS Console, the StackSet details, showing the addition operation was successful."></img>
+<br/><br/>
+<img className="largeImg" src="/img/cpf/manage/accounts/aws/aws-configuration-guide/2692C5BC-F779-4C8B-9226-400875C3A766.png" alt="In the Sonrai onboarding wizard, the 'Done' button is indicated as the final step."></img>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## Post-Deployment
+
+The Discovery process can take anywhere from 10 minutes to ~24 hours to complete, depending on the size of the cloud accounts and the number of accounts added. As information is collected and processed by Sonrai, the <a href="/cpf/permissions-firewall/services/services-intro">Services page</a> will begin to populate entries.

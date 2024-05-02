@@ -1,0 +1,88 @@
+---
+title: SaaS Collector Prerequisites
+sidebar_position: 1
+---
+
+## Overview 
+
+Sonrai SaaS collectors require specific prerequisites to be met before successful deployment can occur. Each cloud type shares common prerequisites, but also requires configurations unique to each. 
+
+---
+
+## Prerequisites Common Across Cloud Types 
+
+<img src="/img/aws/aws.png" className="circleiconborder"></img>
+<img src="/img/azure/azure.png" className="circleiconborder"></img>
+<img src="/img/gcp/gcp.png" className="circleiconborder"></img>
+<br/>
+
+
+### Access Details - Public IP Address List
+
+<div className="grid-container2">
+<div className="grid-child">
+
+For the platform to be able to access cloud environments and integration destinations, IP address allowances for connections from Sonrai must be defined. 
+
+> *For example, AWS SCPs based on AWS Account may block Sonrai from accessing your environment.*
+
+</div>
+<div className="grid-child">
+
+Ensure the following addresses are defined as allowed within active access lists to ensure proper collector functionality:
+
+- `54.145.109.74`
+- `3.219.158.131`
+- `3.215.37.111`
+- `18.215.214.83`
+
+</div>
+</div>
+
+
+---
+
+## AWS-specific Prerequisites
+
+<img src="/img/aws/aws.png" className="circleiconborder"></img>
+<br/><br/>
+<div className="grid-container2">
+<div className="grid-child">
+
+### AWS Config 
+
+<a href="https://aws.amazon.com/config/">AWS Config</a> must be enabled for use within your Organization
+
+### StackSets
+
+Organizational AWS Role creation requires configuration of the AWS CloudFormation StackSets feature in your AWS environment, per the <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html">"self-managed permissions” AWS Guide</a>.
+
+:::info
+For more details on this feature in AWS, see:
+- [Grant self-managed permissions](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html)
+- [Working with AWS CloudFormation StackSets - AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html)
+- [AWS CloudFormation StackSets and AWS Organizations](https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-cloudformation.html)
+:::
+
+</div>
+<div className="grid-child">
+
+### Trust Relationships - AWS Account
+
+The Sonrai SaaS collector will connect to your environment from the following AWS accounts, which may require addition to your SCP configuration:
+- **SaaS data collection**
+  - `513995833988`
+- **Onboarding wizard (production)**
+  - `213217834095`
+- **Onboarding wizard (disaster recovery)**
+  - `548652128817` 
+
+<br/>
+
+For <a href="/cpf/permissions-firewall/permissions-on-demand/permissions-on-demand-intro">Permissions on Demand (PoD)</a> functionality and accurate service action recommendations, ensure your Org's CloudTrail:
+- **has** Management events selected
+- **has** Event API activity read/write permissions
+- **is not** excluding KMS / RDS events
+
+</div>
+</div>

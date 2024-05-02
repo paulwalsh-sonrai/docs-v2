@@ -1,0 +1,102 @@
+---
+title: Role Based Access
+sidebar_position: 3
+
+---
+
+
+
+## Overview 
+
+The Sonrai platform provides Role Based Access (RBAC) to support the needs of a wide variety of users and public cloud security use cases. 
+
+RBAC capabilities enable you to manage your users within the platform along with their role assignments (and corresponding permissions).
+
+A Sonrai role determines which capabilities a user has access to within the Cloud Permissions Firewall.
+
+---
+
+## Role Administration 
+
+Roles are managed by selecting <button>Manage Roles</button> within the **User Profile**.
+
+To manage roles, users must have an appropriate level of permissions to manage roles and permissions (i.e., "**Cloud Permissions Firewall Administrator**" role). 
+
+### Available Roles
+
+<div className="grid-container3">
+<p className="purpleborder"><Icon icon="fa-solid fa-user"></Icon> **Cloud Permissions Firewall <br/>Administrator** <br/><br/>Full administration of all available Cloud Permissions Firewall (CPF) features</p>
+<p className="purpleborder"><Icon icon="fa-solid fa-check"></Icon> **Cloud Permissions Firewall<br/> Approver** <br/><br/>Ability to approve/deny Permissions on Demand (POD) requests</p>
+<p className="purpleborder"><Icon icon="fa-solid fa-binoculars"></Icon> **Cloud Permissions Firewall <br/>Viewer** <br/><br/>Ability to view information within the Cloud Permissions Firewall</p>
+</div>
+
+<div className="cpfreference smallfont">
+<div className="refbody">
+<u>Reference</u>: See <a href="/cpf/permissions-firewall/permissions-on-demand/personas#cloud-permissions-firewall-cpf-administrator">here</a> for more information on the "**Cloud Permissions Firewall Administrator**" persona.
+</div>
+</div>
+<br/>
+
+:::caution
+To affect this role addition/removal, users are urged to log out then log back into the platform
+:::
+
+---
+
+## Roles - Detailed Permissions
+
+To review a list of the specific permissions granted to each role, use the following query in the [Advanced Search](https://app.sonraisecurity.com/App/GraphExplorer) area:
+
+<div className="grid-container">
+<div className="grid-child">
+
+```graphql title="Example Query" showLineNumbers
+query SonraiRoleDetails {
+  SonraiRoles {
+    count
+    items {
+      name
+      description
+      permissions
+
+# Optionally return users for each role 
+      roleAssignments {
+        count
+        items {
+          scope
+          user {
+            count
+            items {
+              email
+              name
+            }
+          }
+        }
+      }
+
+    }  
+  }
+}
+```
+
+</div>
+</div>
+
+---
+
+## Default RBAC User Permissions 
+
+For reference, the Sonrai platform requires specific user permissions to work properly out-of-the box, and so the following are assigned to every user by default: 
+
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr><td><code>Role,<br/>Read</code></td><td>Ability to read Role elements</td></tr>
+<tr><td><code>UserToken,<br/>Read</code></td><td>Ability to read User Token elements</td></tr>
+</tbody>
+</table>

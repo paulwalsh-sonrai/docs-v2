@@ -1,0 +1,272 @@
+---
+title: Sonrai's GraphQL API Library
+sidebar_position: 1
+
+---
+
+
+
+## Overview 
+
+The Sonrai GraphQL API library allow users to programatically run GraphQL queries for data and mutations to make updates & configuration changes, similar to the GraphQL commands in use by the user interface which can be run in [Advanced Search](https://app.sonraisecurity.com/App/GraphExplorer).
+
+In order to access the GraphQL API through the use of Sonrai's library, you will need to generate a Sonrai API key which allows you to authenticate to GraphQL from your script or integration. API keys should be considered equivalent to user credentials, as they permit the same access to the Sonrai platform as a username and password, and *inherit the permissions of the user who creates the key*.
+
+---
+
+## Best Practices
+
+<div className="grid-container2">
+<div className="grid-child bluecard">
+
+<Icon icon="fa-regular fa-hourglass-half" ></Icon> Generate initial tokens in the UI with a short time period (i.e., 2 hours). 
+
+When they are updated programmatically, generate a new token prior to the expiration. As long as your script is run within this timeframe, a new token will be created for you.
+</div>
+<div className="grid-child bluecard">
+<br/><br/>
+<Icon icon="fa-solid fa-arrows-spin" ></Icon> Old, expiring tokens do not need to be deleted manually, they be automatically deleted upon expiration.
+
+</div>
+</div><br/>
+
+:::tip
+Review Sonrai's [Advanced Search Examples](/search/advanced-search/advanced-search-examples) for help with crafting a query/mutation to fit your needs.
+:::
+
+---
+
+## Enabling a "Non Person" Identity for Integrations
+
+To create a non-person identity (NPI) for use with integrations, there are a couple of different options: 
+
+<div className="grid-container2">
+<div className="grid-child optionalaquaborder">
+
+**For organizations who leverage SSO**, work with your identity management team to complete these steps:
+
+1. Create a role "address" within your IAM infrastructure
+2. Create a user within the Sonrai platform (for the above user)
+3. Login to the Sonrai platform via SSO
+4. Generate the API token 
+
+</div>
+<div className="grid-child optionalaquaborder">
+
+**For organizations that do not use SSO or have a secondary email domain**, work with your identity management team to complete these steps:
+
+1. Configure a mail alias <br/>(<u>Example</u>: `sonrai-api@mycompany.com`)
+2. Redirect the alias to a user within your organization 
+3. Create a user within the Sonrai platform (for the above user)
+4. Login to the Sonrai platform
+5. Generate the API token
+
+</div>
+</div>
+
+---
+
+## User API Keys
+
+As part of RBAC feature extensions, User API keys inherit the privileges of the users who are creating the key(s). These key(s) can also be used, prior to its expiration, to generate a new token to continue their integration.
+
+### Creating an API Token
+
+To create a new user token, in the Advanced Search screen or via API, use the `GenerateSonraiUserToken` mutation:
+
+```graphql showLineNumbers
+mutation createToken {
+  GenerateSonraiUserToken (input:{
+    expiresIn: 7200 # number of seconds
+    name: "sampletoken" # a descriptive string for the token
+  }) {
+    name
+    expireAt
+    token
+  }
+}
+```
+
+Tokens can be created with an expiration between 2 hours and 30 days in the future. 
+
+:::info
+**The token value is only displayed when the token is created. Tokens are not visible when listing them via the command `SonraiUserTokens`.*
+:::  
+
+### Listing Current API Tokens: 
+
+To list all currently active tokens, in the Advanced Search screen or via an API, use the `SonraiUserTokens` query:
+
+```graphql title="Example Query" showLineNumbers
+query getAPITokens {
+  SonraiUserTokens {
+    items {
+      name
+      srn
+      resourceId
+      createdDate
+      expireAt
+    }
+  }
+}
+```
+
+### Deleting Current API Tokens
+
+To delete a currently active API token, in the Advanced Search screen or via an API, use the `DeleteSonraiUserToken` mutation:
+
+```graphql title="Example Mutation" showLineNumbers
+mutation revokeToken {
+  DeleteSonraiUserToken (input:{
+    srn: "[srn from SonraiUserTokens list]"
+  })
+}
+```
+
+### Regenerating Tokens 
+
+Tokens are not renewed and instead use an existing token to generate/request a new token. 
+
+When using API keys, your integration will monitor the token to determine the remaining time before expiry. Once the expiry value falls below a few hours the integration will prompt to generate a new token, which should then be saved for use in the next interval and updated again once its expiration approaches.
+
+
+### Token Management - Auditing
+
+When tokens are created/deleted by users via the UI, an audit record is generated under [User Activity](https://app.sonraisecurity.com/App/UserManagement/UserActivity).
+
+![image-20220418160933615](/img/api/sonrai-graphql-api/image-20220418160933615.png)
+
+---
+
+## Sample API Scripts - Example Usages
+
+Sample API scripts are available for download within our [public repository](https://github.com/sonraisecurity/sonrai-public-assets/tree/main/utilities).
+
+### example.py
+
+```python title="Example Query"
+from sonrai_api import api, logger
+
+query = 
+    query getAPITokens {
+      SonraiUserTokens {
+        items {
+          name
+          srn
+          resourceId
+          createdDate
+          expireAt
+        }
+      }
+    }
+
+print(api.execute_query(query))
+
+logger.info("Done")
+```
+
+For further information and updated usage, please refer to the sonarai_api [README.md](https://github.com/sonraisecurity/sonrai-public-assets/tree/main/utilities) file.
+
+---
+
+## Advanced Search & GraphQL Commands
+
+Additional documentation on GraphQL commands are also available in the [Advanced Search](https://app.sonraisecurity.com/App/GraphExplorer) area of the Sonrai platform. 
+
+![image-20220418161155182](/img/api/sonrai-graphql-api/image-20220418161155182.png)
+
+![image-20220418161208800](/img/api/sonrai-graphql-api/image-20220418161208800.png)
+
+In this “Docs” section in the Advanced Search, you can browse the query and mutation (update) categories and get additional details for GraphQL queries which can be used in your API calls.
+
+------
+
+## Other Query Tools
+
+A number of users are also using external third-party tools to query the Sonrai GraphQL API library, including:
+- [Insomnia](https://insomnia.rest/)
+- [Postman](https://www.google.com/search?q=postman+and+graphql)
+
+### Prerequisites
+
+- [Create a Sonrai token](#creating-an-api-token) in the Org you would like to query:
+
+<img src="/img/api/sonrai-graphql-api/CFD330A6-F74D-4426-80C7-415253E67F14.png" alt="A successful token creation within the Sornai platform for use with Postman."></img>
+
+- Retrieve your Sonrai `Org Id` by clicking the user profile icon on the top right:
+
+<div class="thirtypercent"><img src="/img/configure/integrations/jira-cloud/B61E900A-E2A3-46DA-9059-6F5A41AD1035.png" alt="Profile details in Sonrai, including Organization Id."></img></div>
+
+
+### Postman 
+
+
+- Click on <button>New</button> to create a new `GraphQL` request:
+
+<img src="/img/api/sonrai-graphql-api/E8282A03-FE41-4174-9E6C-8C259D6342FF.png" alt="How to generate a new GraphQL request within Postman."></img>
+
+- In the “**Authorization**” tab, choose “**Bearer Token**” as the authentication type and add your Sonrai API token:
+
+<img src="/img/api/sonrai-graphql-api/7C121F61-23B5-4641-8A2D-17E3DE3B96E2.png" alt="Adding the Sonrai token to the Postman request."></img>
+
+- Input your Org Id into the URL bar to query:
+  - `https://<yourOrgID>.sonraisecurity.com/graphql`
+
+:::info 
+`https://<yourOrganization>.sonraisecurity.com/graphql` (*if your Org does not display an Org ID)
+:::
+
+- In the “**Headers**” tab, add a request header for `sonraisecurity-com-org=<yourOrgId>`
+
+<img src="/img/api/sonrai-graphql-api/1C01631E-7E79-47CC-A2C7-92D37D2A2C9B.png" alt="The required request header for retrieving data from the Sonrai GraphQL API."></img>
+
+- In the “**Query**” tab, test a simple query to ensure your configuration is successfully established:
+
+<img src="/img/api/sonrai-graphql-api/2380C75F-1DCC-4FCC-94D1-F33820DE74F1.png" alt="A simple query for the count of users within the Organization, from the Sonrai GraphQL API."></img>
+<br/>
+
+### Configuring Insomnia
+
+The Insomnia application has the ability to connect to the GraphQL server and run an “introspection” query, enabling documentation and autocomplete to work locally in the application.
+
+To configure Insomnia:
+- Create a new request
+- Type `POST`
+- Select `graphql`
+
+![image-20220418161238305](/img/api/sonrai-graphql-api/image-20220418161238305.png)
+
+- Select the “**Auth**” tab and choose “**Bearer Token**” as the authentication type:  
+
+![image-20220418161322516](/img/api/sonrai-graphql-api/image-20220418161322516.png)
+
+- Input your Org Id into the URL bar to query:
+  - `https://<yourOrgID>.sonraisecurity.com/graphql`
+
+:::info 
+`https://<yourOrganization>.sonraisecurity.com/graphql` (*if your Org does not display an Org ID)
+:::
+
+- On the “**GraphQL**” tab, select the “**schema**” button and select “**Refresh Schema**”:
+
+![image-20220418161337157](/img/api/sonrai-graphql-api/image-20220418161337157.png)
+
+![image-20220418161354431](/img/api/sonrai-graphql-api/image-20220418161354431.png)
+
+After a couple of minutes, the schema will update:
+
+![image-20220418161408942](/img/api/sonrai-graphql-api/image-20220418161408942.png)
+
+Once the schema updates, select the “**Show Documentation**” button. The Graphql Schema docs (a) should appear on the right side and autocomplete (b) should now be available:
+
+a)
+
+![image-20220418161425599](/img/api/sonrai-graphql-api/image-20220418161425599.png)
+
+![image-20220418161454611](/img/api/sonrai-graphql-api/image-20220418161454611.png)
+
+b)
+
+![image-20220418161513514](/img/api/sonrai-graphql-api/image-20220418161513514.png)
+
+

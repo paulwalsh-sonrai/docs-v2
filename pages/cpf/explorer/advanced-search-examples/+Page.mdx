@@ -1,0 +1,123 @@
+---
+title: Advanced Search Examples
+
+---
+
+
+
+## Overview
+
+The Sonrai [Advanced search](https://app.sonraisecurity.com/App/GraphExplorer) supports access to the full GraphQL query language, providing for the  ability to build more complex query logic than with the more basic [UI-based search](https://app.sonraisecurity.com/App/Search).  
+
+Auto-complete is enabled in this UI to assist in building searches and the Docs Explorer pane is avilable for looking through API schema details. 
+
+### Advanced Search Syntax Pointers
+
+**Values Filter Option**
+
+When using `op: [OPERATOR] values: [ … ]` filters, the “values” filter option only works with `op: IN_LIST` and `op: NOT_IN_LIST` tests. If you attempt to use it with other operators, such as `CONTAINS`, the filter is **not** activated and will not be applied to your query.
+
+**Limits and Offsets**
+
+The default number of items returned for queries varies, based on the query at hand (Example: Some are limited to returning 100 results, while others may return 25). To return more [or less] results for your search query, you can leverage `limits` and `offsets`. 
+
+By changing the offset value, you can effectively page through sets of results, like below:
+- Page 1: ```items(limit:1000 offset 0 orderBy: {title: {order: ASC} }))```
+- Page 2: ```items(limit:1000 offset 1000 orderBy: {title: {order: ASC} }))```
+- Page 3: ```items(limit:1000 offset 2000 orderBy: {title: {order: ASC} }))```
+
+:::tip 
+Sorting by ascending will ensure the same ordering of data is returned when asking for the next offset in the iteration (otherwise the data returned could be duplicated/missing in relation to the first offset).
+:::
+
+---
+
+## List of Saved Searches 
+
+This query will return a list of the defined searches:
+
+```graphql title="Example Query" showLineNumbers
+query AdvancedSearches {
+  SavedQueries 
+  (where: {
+    # add a string to the value below to search for a specific matching name
+    name: {op: CONTAINS value: ""}
+  })
+  {
+    count
+    items {
+      name
+      srn
+      # optionally include the GraphQL query, as well
+    }
+  }
+}
+```
+
+---
+
+## Saving Advanced Searches
+
+Saving an Advanced Search allows you to create complex queries and save them to be used at a later date.
+
+To save a search, add a parameter called `saveQuery`, providing a name and other options:
+
+```graphql title="Example Query" showLineNumbers
+ query sonrai_user_activity { SonraiAuditLogs
+   saveQuery: {name: "userLoginsSearch" overwriteExisting: true execute: false}
+  	( where: {
+        fromDate: { value: "2023-12-01"}
+        toDate: { value: "2024-01-01"}
+        eventName: {value: "UserLogin"}
+     })
+  {
+  	count
+    items {
+      createdDate
+      eventName
+      actor { name }
+      message
+    }
+	}
+}
+```
+
+<br/>
+
+  <div className="bluecard">
+      <h3>Best Practices</h3>
+      <p>
+        <li><b>Include the</b> <code>saveQuery</code> <b>line twice</b>; once <i>as a comment</i> and once <i>without the comment</i>.<br/> The <code>saveQuery</code> line does not get saved with the search, so by adding the line a second time as a comment the details are kept with the search.     
+        If further changes to the search are required, copy/paste the comment keeping the same name for the search.   </li>
+        <li><b>Include</b> <code>overwriteExisting: true</code>, to allow the existing query to be overwritten.</li> <br/>
+        <li><b>Include</b> <code>execute: false</code>, to remove the [sometimes lengthy] requirement to wait until query completion before the search is saved.</li>
+      </p>
+  </div>
+
+---
+
+## Deleting Advanced Searches
+
+To delete a saved search, the SRN of the saved search must first be obtained: 
+
+```graphql title="Example Query" showLineNumbers
+query searches {
+  SavedQueries
+  (where: { name: { op: CONTAINS, value: "<searchName>" caseSensitive:false } }) 
+  {
+    items  {
+      name
+      srn
+    }
+  }
+}
+```
+
+Use the SRN of the saved search within the deletion mutation:
+
+```graphql title="Example Mutation" showLineNumbers
+mutation deleteQuery {
+  DeleteSavedquery (srn:"<srn of the search>")
+}
+```
+

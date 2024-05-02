@@ -1,0 +1,63 @@
+---
+sidebar_position: 2
+sidebar_label: "Hero Card: IAM Users and Roles with Excessive Privilege"
+title: "Hero Card: IAM Users and Roles with Excessive Privilege"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Overview
+
+<img className="noborder" src="/svg/cpf/intro-to-services/excess-priv-iam.svg"></img>
+
+When Identity and Access Management (IAM) users and roles are assigned permissions which ultimately don't get put to use, those permissions can provide an attacker with an easy way to gain intelligence, perform data exfiltration, impersonate users, and more.  
+
+Excess privilege can also lead to scenarios where users are unintentionally allowed to complete actions that are not expected, like creating/deleting resources, which can drive up operational costs and cause outages.
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/405CAE04-B807-409E-A20A-2480574D8DBE.png"></img>
+
+### Examples
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Example 1: When Outsiders Become Insiders" label="Example 1: When Outsiders Become Insiders"> 
+<h4 className="tabheader hiddenheader">Example 1: When Outsiders Become Insiders</h4>
+
+One day, an attacker managed to gain access to a junior engineer's account through a successful phishing attempt. The engineer's account had been granted excessive privileges due to lax IAM policies. Although the engineer's primary role involved developing software and managing deployment scripts, their account had permissions far beyond what was necessary for their job.
+
+With the engineer's compromised credentials, the attacker explored the company's AWS environment. The broad permissions allowed the attacker to access sensitive databases, alter application configurations, and modify access controls. The attacker used these elevated privileges to create backdoors and install malware on several virtual machines.
+
+The attacker then exfiltrated large volumes of proprietary data and customer information, covering their tracks by modifying logs and disabling monitoring alerts. 
+
+</TabItem>
+<TabItem value="Example 2: When Insiders Cause Problems" label="Example 2: When Insiders Cause Problems"> 
+<h4 className="tabheader hiddenheader">Example 2: When Insiders Cause Problems</h4>
+
+An enterprise company experiencing rapid growth was hiring new software engineers to aide in quick product development. 
+
+Due to an oversight in the onboarding process, their newest hire Tyler was assigned an IAM role with full administrative privileges over the entire AWS account (intended for senior administrators). Tyler was unaware of the level of access they had been granted and set to work developing a new feature!
+
+While working on a deployment script, Tyler accidentally executed a command that deleted an entire S3 bucket containing critical customer data. The error was not immediately noticed because Tyler's elevated permissions allowed the script to execute without any warnings or alerts.
+
+As the day progressed, the missing data caused a cascade of issues across the company's services. Customers experienced disruptions and the company's reputation took a hit. 
+
+</TabItem>
+</Tabs>
+</div>
+
+---
+
+## Protect Your Identities 
+
+Deny sensitive permissions access for identities which have been afforded it, but don't use it! 
+
+Select the scope at which you want to take action and click the preview button to see the changes you are about to make:
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/35387236-F864-45F2-8701-31E450465EB7.png"></img>
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/AAE856AC-CC0C-45A0-B8DD-A189A51EB870.png"></img>
+
+When ready, click the <button className="cpfgreenbutton">Protect Identities</button> button to review those changes within the <a href="/cpf/permissions-firewall/pending-changes/pending-changes-intro">Pending Changes</a> page before you deploy them to your cloud:
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/A99A34B8-568E-4E86-8251-ABF1DF1F934B.png"></img>

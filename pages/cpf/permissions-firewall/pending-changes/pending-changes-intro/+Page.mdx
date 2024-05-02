@@ -1,0 +1,69 @@
+---
+sidebar_position: 1
+sidebar_label: "Intro: Pending Changes"
+title: "Intro: Pending Changes"
+---
+
+
+
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  rel="stylesheet"
+/>
+
+## Overview 
+
+Within the "**Pending Changes**" page, you will see a listing of all changes proposed by all members of your organization who are actively working within the Cloud Permissions Firewall (CPF).
+
+While reviewing the pending changes, it can be useful to ask yourself probing questions like:
+
+> Did I select a change I'd rather not make after all? 
+
+> Is this change set at the right scope? (i.e. for this one account rather than my entire organization, or vice versa)
+
+
+## What Kinds of Entries Will I See?
+
+<div className="grid-container3">
+<div className="grid-child purpleborder">
+<Icon icon="fa-solid fa-ban"></Icon> <b><a href="/cpf/permissions-firewall/services/how-to-disable-services">Service Blocks</a></b> <br/><br/>(<i>i.e. when you disable a service from use by all identities</i>)
+</div>
+<div className="grid-child purpleborder">
+<Icon icon="fa-solid fa-user-lock"></Icon> <b><a href="/cpf/permissions-firewall/services/how-to-service-protections">Service Protections</a></b> <br/><br/>(<i>i.e. when you restrict the use of a service to identities actively using the permissions</i>)
+</div>
+<div className="grid-child purpleborder">
+<Icon icon="fa-solid fa-clipboard-check"></Icon> <b><a href="/cpf/permissions-firewall/services/how-to-service-protections#exempting-an-identity">Identity Exemptions</a></b> <br/><br/>(<i>i.e. when you exempt a user from a service protection (<u>Example</u>: new users, break-glass accounts, etc.)</i>)
+</div>
+</div>
+
+## What is the Process Flow?
+
+The process to make these changes a reality is very straightforward from review within the Cloud Permissions Firewall UI to deployment in your cloud, but you do always have the ability to discard changes and circle back at any point, if required. 
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/pending-changes/2631FBF1-0BCE-4AB3-8971-5889A4AB35A5.png"></img>
+
+<br/><br/>
+<div className="grid-container">
+<div className="grid-child purpleborder">
+<Icon icon="fa-solid fa-cloud"></Icon> It's recommended to review your pending changes before deploying the CloudFormation template within your cloud:
+<div className="grid-container2">
+<div className="grid-child">
+<h4>Via the CloudFormation Template</h4>
+- Click on the "**Submit all changes**" button to initiate the CloudFormation json download
+    - **Note: This does NOT deploy any changes!**
+- In the template json, double-check the scope at which you're going to apply these changes 
+</div>
+</div>
+</div>
+</div>
+<br/>
+<div className="grid-container2">
+<div className="grid-child purpleborder">
+<Icon icon="fa-solid fa-trash-can"></Icon> If you decide you'd rather not action these changes:
+- Click the trash can icon to remove entries from the "**Pending Changes**" list
+</div>
+<div className="grid-child purpleborder">
+<Icon icon="fa-solid fa-cloud-arrow-up"></Icon> Once you are satisfied with the list of pending changes:
+- Deploy the CloudFormation template in your cloud
+</div>
+</div>

@@ -1,0 +1,76 @@
+---
+sidebar_position: 2
+sidebar_label: "POD Personas"
+title: "POD Personas"
+---
+
+## Overview 
+
+Certain use cases and personas have associated best practice recommendations within the confines of the Permissions on Demand (POD) methodology. 
+
+---
+
+## General 
+
+### Cloud Permissions Firewall (CPF) Administrator 
+
+Administrators will be afforded the permissions required to do every action within the platform. 
+
+<table> 
+<thead>
+<tr>
+<th>Description</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Onboarding Accounts (at the Org level)</td>
+<td><a href="https://app.sonraisecurity.com/App/Accounts">Manage > Accounts</a></td>
+</tr>
+<tr>
+<td>Configuration of role-based access for users</td>
+<td><a href="https://app.sonraisecurity.com/App/UserManagement">Manage > Users</a>, <a href="https://app.sonraisecurity.com/App/RoleManagement">Manage > Roles</a></td>
+</tr>
+<tr>
+<td>Assignment of Permissions on Demand Approvers</td>
+<td><a href="https://app.sonraisecurity.com/App/Purple/Approvers">Permissions Firewall > Approvers</a></td>
+</tr>
+<tr>
+<td>Execution of Service changes (disabling, exempting identities, etc.)</td>
+<td><a href="https://app.sonraisecurity.com/App/Purple/Services">Permissions Firewall > Services</a></td>
+</tr>
+<tr>
+<td>Review of reporting/audit information</td>
+<td><a href="https://app.sonraisecurity.com/App/Purple/Reporting">Permissions Firewall > Reporting</a></td>
+</tr>
+</tbody>
+</table>
+
+
+---
+
+## Exemption-worthy Personas 
+
+### Break Glass Identities
+
+Break glass identities often go unused for a long period of time, only put to use when emergency recoveries and/or incidents occur. 
+
+These types of identity often have administrative level permissioning to provide ease of access and quick remediation capabilities during high risk situations. 
+
+:::tip
+To ensure Sonrai's Cloud Permissions Firewall (CPF) appropriately allows break glass functionality when you need it most, add them as exemptions for individual accounts in advance of (or in tandem with) implementing a service protection.
+:::
+
+---
+
+### Machine Identities (Infrastructure Deployment)
+
+These deployment identities are part of the CICD pipeline processes used by teams to deliver applications in the cloud. 
+
+These types of identity often require sensitive cloud permissioning to allow adding/removing elements of a cloud (like networks, gateways, etc.). 
+
+:::tip
+To ensure Sonrai's Cloud Permissions Firewall (CPF) appropriately allows your machine identities to deploy your cloud infrastructure without issue, add them as exemptions for individual accounts in advance of (or in tandem with) implementing a service protection.
+:::
+

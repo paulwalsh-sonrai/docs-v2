@@ -1,0 +1,163 @@
+---
+sidebar_position: 6
+sidebar_label: "Disabling Services"
+title: "Disabling Services"
+---
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Overview
+
+Disabling service(s) can be regarded as a quick and simple method of reducing attack surface to lower the overall level of service-related risk(s) for your cloud. 
+
+:::tip
+**Before you read on for information on implementing service blocks, we recommend you first review the <a href="/cpf/permissions-firewall/services">Services page</a>* to understand key terms/concepts
+:::
+
+<div className="mermaid centermermaid noborder">
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'fontSize': '12pt',
+      'fontFamily': 'arial',
+      'tertiaryColor': '#E4E3FF',
+      'edgeLabelBackground': '#E4E3FF',
+      'clusterBkg':'#d1cfff'
+    }
+  }
+}%%
+flowchart LR
+classDef one fill:#7524A4,stroke:#000000,stroke-width:3px
+direction LR
+   subgraph 1["Services Page"]
+   Z("<font color=white><b>Determine <br/>Scope"):::one 
+   A("<font color=white><b>Review <br/>Unused/Unprotected <br/>Services</b>"):::one 
+   B("<font color=white><b>Disable <br/>Service(s)</b>"):::one
+    end
+    subgraph 0["Pending Changes Page"]
+    D("<font color=white><b>Review/Submit <br/>Your Pending Changes</b>"):::one
+    end
+    subgraph 2["Cloud Deployment"]
+    E("<font color=white><b>Deploy <br/>the Template</b>"):::one
+    end
+       Z --> A
+       A --> B
+       B --> D 
+       D --> E
+```
+
+</div>
+
+:::warning
+Disabling a service will make the service unusable for the scope selected - even exempted identities will not be able to use it! 
+:::
+
+---
+
+## Scope it Out 
+
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Focus Org-wide" label="Focus Org-wide"> 
+<h4 className="tabheader hiddenheader">Focus Org-wide</h4>
+
+Keeping your scope set to the top-level Org-wide view allows you to make changes most efficiently as said changes will propagate down to the child OUs/Accounts. 
+
+:::tip
+If your Org is fairly large, it likely makes more sense to review the next tab on scoping to singular OU(s)/Account(s).
+:::
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/8DF64905-89CF-4B21-AB40-B9540DC46ABC.png"></img>
+
+</TabItem>
+<TabItem value="Focus on a Single OU/Account" label="Focus on a Single OU/Account"> 
+<h4 className="tabheader hiddenheader">Focus on a Single OU/Account</h4>
+
+When changing your scope to a specific AWS OU/Account, the number of Services listed does not change overall but the "**Account Usage**" column reflects `x of 1` rather than the original `x of y` (*<i>where `y` represents the full number of accounts in your onboarded Organization(s)</i>). 
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/D991F6C5-E045-430A-8FD9-3FF02A6D1F09.png"></img>
+
+</TabItem>
+</Tabs>
+</div>
+
+---
+
+## Filter for Unprotected Services
+
+Now you have a clear view of what Services are considered protected in context of either a specific account or your entire organization. 
+
+Continue on by filtering the "**Service Status**" by "**Unprotected**" and remediate those first to make the most impact.
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/6E765504-FB07-4043-8F94-0C0E2CA05F5A.png"></img>
+
+---
+
+## Implementing a Service Block
+
+### Disable Unused Services
+
+When a service remains enabled, but unused, it provides an avenue for lateral movement in the case of a breach. 
+
+<div className="grid-container2">
+<div className="grid-child cards">
+  <div className="scenariocard card-scenario">
+    <h2 className="card__title"><Icon icon="fa-solid fa-bolt"></Icon> Scenario</h2>
+    <i className="cardhr"></i>
+    <i className="card__text">"We were testing out AWS Certificate Manager (CA) for an application, but have decided to use an alternate CA."</i>
+  </div>
+</div>
+<div className="grid-child cards">
+  <div className="scenariocard card-action">
+<h2 className="card__title">Action</h2>
+<i className="cardhr"></i>
+<i className="card__text"><Icon icon="fa-solid fa-arrow-right"></Icon>  It looks like someone forgot to disable the service after testing was completed.<br/><br/>To remediate, click "**Disable**" then navigate to the "**Pending Changes**" page.</i>
+</div>
+</div>
+</div>
+
+
+### Disable Unauthorized Services 
+
+As an example, when a service remains enabled it can be tempting for members of your organization to use it without following change management process(es), for example. This can lead to violations of customer-related requirements (<u>Example</u>: think GDPR), additional unexpected costs, etc. 
+
+<div className="grid-container2">
+<div className="grid-child cards">
+  <div className="scenariocard card-scenario">
+    <h2 className="card__title"><Icon icon="fa-solid fa-bolt"></Icon> Scenario</h2>
+    <i className="cardhr"></i>
+    <i className="card__text">"Something in one of our AWS Accounts is using API Gateway Execute which isn't on our list of authorized AWS services..."</i>
+  </div>
+</div>
+<div className="grid-child cards">
+  <div className="scenariocard card-action">
+<h2 className="card__title">Action</h2>
+<i className="cardhr"></i>
+<i className="card__text"><Icon icon="fa-solid fa-arrow-right"></Icon> In this case, you may want to disable the entire service to ensure no identities within your organization can use it, since it isn't an authorized service for use.</i>
+</div>
+</div>
+</div>
+<br/>
+
+:::caution
+Before putting the service block in place [in this kind of scenario], we highly recommend checking in with the owner of the AWS Account/identity first to ensure the service in question is not used for an integral part of your production/customer-facing infrastructure
+:::
+
+
+---
+
+## Review Your Changes 
+
+Now that you've scoped your view and chosen to block usage for a service entirely (either for your entire Organization or specific AWS Account(s)), click <button>Disable</button> on the confirmation modal to transfer the changes to the "**Pending Changes**" page for review. 
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/17DCC8DE-666F-46BC-8961-0945B1C53E9B.png"></img>
+
+<div className="blueborder smallfont">
+<u>Reference</u>: See <a href="/cpf/permissions-firewall/pending-changes/">here</a> for more information on the "**Pending Changes**" page.
+</div>

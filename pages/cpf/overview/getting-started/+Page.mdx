@@ -1,0 +1,73 @@
+---
+title: Getting Started
+sidebar_position: 5
+
+---
+
+<div className="printImg pagebreakaft">
+<img src="/img/sonrai_cover_page2.png"></img>
+<br/>
+<hr style={{'borderTop':'black solid 1px'}}></hr>
+<div style={{'textAlign':'center'}}><i>© {new Date().getFullYear()} Sonrai Security. All rights reserved.</i></div>
+</div>
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+## Overview 
+
+Sonrai's Cloud Permissions Firewall will enable your teams to keep development pace without sacrificing on security best practices: 
+- control access to the most sensitive permissions within your cloud 
+- integrate security into DevOps workflows, making cloud security a seamless experience
+
+With a view of cloud activity from the past 30 days across all accounts within your AWS Organization, our Cloud Permissions Firewall helps you review and tighten controls for: 
+- which services/regions/identities are used vs unused 
+- which identities have direct entitlements to what permissions (used vs. unused)
+
+---
+
+## Prerequisites
+
+<Icon className="largefont" icon="fa-solid fa-users" ></Icon> Permissions for the AWS Organization-level tier of your cloud
+
+<Icon className="largefont" icon="fa-brands fa-aws" ></Icon> Implementation of the <a href="/cpf/manage/accounts/prerequisites">account onboarding prerequisites</a> (**both cloud-agnostic and AWS-specific*)
+
+---
+
+## How do I Get Started? 
+
+
+<h2><Icon className="largefont" icon="fa-solid fa-square-check"></Icon> <a href="https://app.sonraisecurity.com/App/Onboarding">Onboard your AWS Org(s)</a></h2>
+
+<Icon className="largefont" icon="fa-brands fa-aws" ></Icon> Choose the **AWS cloud** type 
+[*default*]
+
+<Icon className="largefont" icon="fa-regular fa-id-card" ></Icon> Choose the "**Sonrai role creation**" option [*default*]
+<img src="/img/cpf/overview/getting-started/62FEBC1F-4D05-476B-91F0-FB5089EACD27.png"></img>
+
+<div className="blueborder smallfont">
+<u>Reference</u>: See <a href="/manage/accounts/aws/aws-guide">here</a> for further detail on adding AWS Accounts at the Org level.
+</div>
+
+<h2><Icon className="largefont" icon="fa-solid fa-square-check"></Icon> Configure your baseline</h2>
+
+<div className="grid-container2">
+<div className="grid-child">
+
+> I've previewed the hero cards at the top of the Services page and I'm ready to let Sonrai help form the template to optimally baseline my environment! 
+
+
+</div>
+<div className="grid-child">
+
+<Icon className="largefont" icon="fa-regular fa-user" ></Icon> Exempt your break glass account(s) 
+
+<Icon className="largefont" icon="fa-solid fa-user-shield"></Icon> Protect services in use
+
+<Icon className="largefont" icon="fa-regular fa-circle-xmark" ></Icon> Quarantine zombies
+
+<Icon className="largefont" icon="fa-regular fa-circle-xmark" ></Icon> Disable unused services
+
+</div>
+</div>

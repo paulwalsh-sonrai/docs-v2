@@ -1,0 +1,113 @@
+---
+sidebar_position: 1
+sidebar_label: "Intro: Permissions Firewall"
+title: "Intro: Permissions Firewall"
+---
+
+
+
+## Overview
+
+At a high level, Sonrai's Cloud Permissions Firewall provides you with recommended service and sensitive permissions changes through a template you can deploy within your cloud. 
+
+With Sonrai's Cloud Permissions Firewall, you gain:
+
+<div className="grid-container2">
+<div className="grid-child purpleborder">
+<b className="centerediconhead">Immediate Visibility</b> > into every service and permission used in your running cloud (and those unused or sparsely used)
+</div>
+<div className="grid-child purpleborder">
+<b className="centerediconhead">Centralized Control</b> > to enable/disable services and restrict sensitive permissions to prevent misuse of any Account(s)
+</div>
+</div>
+<br/>
+
+## Services Management
+
+<div className="grid-container2">
+<div className="grid-child">
+
+<div className="mermaid noborder centermermaid" style={{'margin': 'auto'}}>
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'fontSize': '12pt',
+      'fontFamily': 'arial',
+      'tertiaryColor': '#E4E3FF',
+      'edgeLabelBackground': '#E4E3FF',
+      'clusterBkg':'#d1cfff'
+    }
+  }
+}%%
+flowchart TB 
+classDef one fill:#7524A4,stroke:#000000,stroke-width:3px
+direction TB
+   Z("<font color=white><b>Determine Scope <br/>for Changes</b>"):::one --> A
+   Z --> B 
+   subgraph 1[ ]
+   A("<font color=white><b>Disable a Service</b>"):::one 
+   end
+   subgraph 2[ ]
+   B("<font color=white><b>Exempt an Identity</b>"):::one
+    C("<font color=white><b>Protect a Service</b>"):::one
+    B --> C
+    end
+    D("<font color=white><b>Review Your Pending Changes</b>"):::one
+    A --> D 
+    C --> D 
+    E("<font color=white><b>Deploy the Template</b>"):::one
+    D --> E
+```
+
+</div>
+</div>
+<div className="grid-child">
+
+
+> How do I generate the template of recommended/desired changes?
+
+1. Determine the scope for changes 
+
+2. Determine the service action: 
+- make an identity exemption for sensitive permissions usage (i.e. break glass accounts, deployment identities)
+- protect a service
+- disable a service
+
+3. Once the service action is complete, your changes move into <a href="/cpf/permissions-firewall/pending-changes/pending-changes-intro">'pending changes' page</a> for review
+
+4. Review the <a href="/cpf/permissions-firewall/pending-changes/deploying-in-aws">CloudFormation template and deploy it</a> to your cloud 
+
+</div>
+</div>
+
+
+:::info
+We are not performing any service-related changes in your cloud on your behalf - your journey through the Cloud Permissions Firewall UI from end to end will produce a template of changes that you can review and deploy once you're ready
+:::
+
+
+## Permissions on Demand 
+
+Once service protections are in place, users within your organization can initiate <a href="/cpf/permissions-firewall/permissions-on-demand/requests/how-to-action-pod-requests">Permissions on Demand requests</a> for the ability to use sensitive permissions.
+
+Permissions on Demand is a permissions-granting workflow strategy that reduces requests to internal staff (i.e. DevOps, CloudOps, etc.) by focusing on <a href="/cpf/permissions-firewall/services/#common-controls">sensitive permissions access</a>. 
+
+Traditional just-in-time (JIT) products focus on granting and revoking permissions from identities on an 'as needed' basis. Permissions on Demand (POD) puts the focus on determining *permissions assigned* versus *permissions in use*, pinpointing instances where *sensitive permissions* are involved.
+
+### Delegation and Collaboration FAQ
+
+
+> Do <a href="/cpf/permissions-firewall/permissions-on-demand/approvers/how-to-manage-pod-approvers">Permissions on Demand Approvers</a> have delegated access? 
+
+Yes! 
+
+Once you assign a Permissions on Demand Approver at a scope, they are empowered to approve/deny those incoming sensitive service permissons requested by your users. These Approvers do NOT require permissions assignment within your cloud to enable this access, they are simply the gate which stands between your users and their access to sensitive permissions for services to which they already have access. 
+
+> Can Service level changes be delegated to Org Admins? 
+
+Yes!
+
+A <a href="/cpf/manage/users/user-management">Cloud Permissions Firewall Admininistrator user</a> can stage changes as needed, download the CloudFormation template, and provide it to your AWS Org Admin to deploy as per your business processes.

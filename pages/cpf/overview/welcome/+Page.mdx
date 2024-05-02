@@ -1,0 +1,93 @@
+---
+sidebar_position: 1
+sidebar_label: Welcome
+title: Cloud Permissions Firewall
+---
+
+<div className="printImg pagebreakaft">
+  <img src="/img/sonrai_cover_page2.png"></img>
+  <br />
+  <hr style={{ borderTop: 'black solid 1px' }}></hr>
+  <div style={{ textAlign: 'center' }}>
+    <i>© {new Date().getFullYear()} Sonrai Security. All rights reserved.</i>
+  </div>
+</div>
+
+import blogPostHomePage from '/.docusaurus/docusaurus-plugin-content-blog/cpf-blog/blog-post-list-prop-cpf-blog.json';
+
+<div className="pagebreak"></div>
+<div className="tilewrapper">
+<div className="grid-container3">
+<div className="grid-child">
+
+  <div className=" tilecont1-cpf">
+  <h2 className="centertitle"><b className="verbemph">Exempt</b></h2>
+  <div className="grid-container2 center">
+<p className="center tilecontinset1-cpf">
+  <Icon className="largefont" icon="fa-solid fa-id-card"></Icon>
+  <br />
+  <a href="/discover/workload-protection/workload-protection-flow">
+    <b>Exempt identities to retain access to restricted services</b>
+  </a>
+</p>
+</div>
+</div>
+</div>
+<div className="grid-child">
+    <div className="tilecont2-cpf">
+        <h2 className="centertitle">
+      <b className="verbemph">Protect</b>
+    </h2>
+      <div className="grid-container2 center">
+              <p className="center tilecontinset2-cpf">
+          <Icon className="largefont" icon="fa-solid fa-user-lock"></Icon>
+          <br />
+          <a href="/manage/collector-types">
+            <b> Protect access to <br/>sensitive permissions </b>
+          </a>
+        </p>
+      </div>
+  </div>
+</div><div className="thought2 bubble2 smallfont">
+<br/>
+<i>Not finding what you need through the top menu search bar?</i>
+<br/><br/>
+<div className="grid-container">
+<a href="https://sonraisecurity.com/product-tour/cloud-permissions-firewall/">Try Our Interactive Product Tour</a>
+<br/>
+&
+<a href="/cpf/overview/getting-started"> Get started <br/> with Sonrai!</a>
+</div>
+<div className="welpad">
+      <h3 className="welpad">Important Bookmarks</h3><br/>
+        <ul>
+          {blogPostHomePage.items.slice(0, 4).map((item, index) => (
+            <li className="welli" key={index}>
+              <b><a href={`${item.permalink}`}>{item.title}</a></b>
+              <br/>
+              <hr></hr>
+            </li>
+          ))}
+        </ul>
+    </div>
+</div>
+</div>
+
+<div className="grid-container3">
+<div className="grid-child">
+<div className="tilecont3-cpf">
+<h2 className="centertitle">
+<b className="verbemph">Disable</b>
+</h2>
+    <div className="grid-container2 center">
+    <p className="center tilecontinset3-cpf">
+    <Icon className="largefont" icon="fa-solid fa-user-xmark"></Icon>
+    <br/>
+    <a href="/cpf/manage/users/user-management"> <b>Disable service and region usage within your cloud</b></a>
+    </p>
+    </div>
+  </div>
+    </div>
+    <img aria-hidden="true" src="/img/cpf/overview/welcome/welcome_graphic.png" className="noborder centerimg"></img>
+</div>
+</div>

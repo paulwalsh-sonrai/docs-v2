@@ -1,0 +1,86 @@
+---
+title: AWS Configuration Troubleshooting
+sidebar_position: 4
+---
+
+
+## Overview
+
+This section provides descriptions of commonly encountered errors while completing the onboarding process, guiding you through the associated fix(es) and best practice(s).
+
+---
+
+## Troubleshooting
+
+### Role Errors
+
+<div className="faqgloss">
+
+> Why was my role unable to be validated?
+
+<img src="/img/manage/accounts/aws/aws-troubleshooting/27A304C1-767A-4140-B7C6-6134F89B38ED.png" alt="An error returned within the Sonrai AWS onboarding wizard which states 'The Sonrai Collector Role ARN must not contain any whitespace'."></img>
+
+**Fix**: Delete any spaces before or after the role ARN in the field and click the <button>Validate ARN</button> again.
+</div>
+<br/>
+
+<div className="faqgloss">
+
+> My role creation(s) errored during my attempt, what went wrong?
+
+<img src="/img/manage/accounts/aws/aws-troubleshooting/E9119240-7D5B-45EC-9F25-244F9C11BFC5.png" alt="The AWS Console, reporting a rollback/deletion for the role creation."></img>
+
+```json title="Key Error Message"
+Resource handler returned message: "You must be the management account or delegated admin account of an organization before operating a SERVICE_MANAGED stack set (Service: CloudFormation, Status Code: 400, Request ID: ad904cce-0591-4835-867e-cf7e2bc0b5bd)" (RequestToken: 824541e0-6685-bbe5-f8df-cd8bff7ab813, HandlerErrorCode: InvalidRequest)
+```
+
+**Fix**: Delete the failed Stack and log in to your AWS Org with the appropriate account/permissions to retry the deployment.
+</div>
+<br/>
+
+<div className="faqgloss">
+
+> When I click <button>Validate ARN</button>, why do I receive an error?
+
+This could be due to insufficient permissions. To check for errors with the Account reconcile job, run this GraphQL query within the [Advanced Search](https://app.sonraisecurity.com/App/GraphExplorer):
+
+```graphql title="Investigative Reconcile Query" showLineNumbers
+query reconcileCloudPlatformAccounts {
+  CollectorLogs(where: { jobType: { value: "reconcile-pa" } cloud:{ value:"aws"} } ) {
+    items {
+      collector
+      cloud
+      account
+      jobType
+      errorCategory
+      targetType
+      rootTarget
+      timestamp
+    }
+  }
+}
+```
+
+Any issues with permissions should be listed, like so:
+
+<img src="/img/manage/accounts/aws/aws-troubleshooting/EB51123A-3581-4AE2-A0C6-C21F45941588.png" alt="An AWS permissions error listed within the query results for the Account reconcile job run."></img>
+
+</div>
+<br/>
+
+<div className="faqgloss">
+
+> My Sonrai Collector Role ARN validated successfully, but when I clicked <button>Done</button> I got an error...
+
+```json title="Key Error Message"
+There was a problem onboarding your account. DUPLICATE_ACCOUNT_ERROR
+```
+
+<img className="eightypercent" src="/img/manage/accounts/aws/aws-troubleshooting/9D30045A-ACA9-47BE-99C7-F81D51811890.png" alt="The Sonrai onboarding wizard, reporting a duplicate account error message."></img>
+
+**Fix**: As the error suggests, this AWS Account has already been configured for use with the Sonrai platform. Search the Account number within the <a href="https://app.sonraisecurity.com/App/Accounts">Accounts list</a> to view the entry and/or make changes. 
+
+For this situation, it is considered best practice to delete the duplicate Stack (and as a result, the resources it created) from your AWS Account.
+
+</div>
+

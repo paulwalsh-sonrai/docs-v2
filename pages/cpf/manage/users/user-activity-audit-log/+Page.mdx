@@ -1,0 +1,124 @@
+---
+title: User Activity Audit Log
+sidebar_position: 4
+---
+
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+
+### Overview
+
+Sonrai user activity logging is available in the [User Management](https://app.sonraisecurity.com/App/UserManagement) / [User Activity](https://app.sonraisecurity.com/App/UserManagement/UserActivity) area, with the following relevant Sonrai platform actions being logged:
+
+<div className="grid-container3"> 
+<div className="grid-child 1">
+<code>UserLogin</code>
+<br/>
+<code> UpdateSonraiUsers</code>
+<br/>
+<code> UpdateSonraiCurrentUsers </code>
+<br/>
+<code> CreateSonraiInvites</code>
+<br/>
+<code> UpdateSonraiInvites </code>
+<br/>
+<code>DeleteSonraiInvites </code>
+<br/>
+</div>
+<div className="grid-child 2">
+<code>CreateSonraiPendingRoleAssignments</code>
+<br/>
+<code> DeleteSonraiPendingRoleAssignments </code>
+<br/>
+<code> CreateSonraiRoleAssignments</code>
+<br/>
+<code> DeleteSonraiRoleAssignments</code>
+<br/>
+<code>CreateSonraiRoles </code>
+<br/>
+<code>UpdateSonraiRoles</code>
+</div>
+<div className="grid-child 2">
+<code>CreateQueryvariable </code>
+<br/>
+<code>CreateSavedquery </code>
+<br/>
+<code>UpdateQueryvariable</code>
+<br/>
+<code> UpdateSavedquery</code>
+<br/>
+</div>
+</div>
+
+
+### Reviewing Older Actions
+
+By default, the [User Activity](https://app.sonraisecurity.com/App/UserManagement/UserActivity) screen shows the last 7 days of user activity but can be readjusted to:
+- Last 24 hours
+- Last 7 days
+- Last month
+- Last 90 days
+- Last year
+- Custom 
+
+Using the [Advanced Search](https://app.sonraisecurity.com/App/Search), searches can also span back further and filtering for specific actions like listed above can be completed to determine the user(s) who made platform changes.
+
+For example, the query below searches from `December 1st, 2023 - January 01, 2024` to list any users who logged in:
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Example Query" label="Example Query"> 
+<h4 className="tabheader hiddenheader">Example Query</h4>
+
+```graphql title="Example Query" showLineNumbers
+ query sonrai_user_activity { SonraiAuditLogs
+  	( where: {
+        fromDate: { value: "2023-12-01"}
+        toDate: { value: "2024-01-01"}
+        eventName: {value: "UserLogin"}
+     })
+  {
+  	count
+    items {
+      createdDate
+      eventName
+      actor { name }
+      message
+    }
+	}
+}
+```
+
+</TabItem>
+<TabItem value="Example Query Return" label="Example Query Return"> 
+<h4 className="tabheader hiddenheader">Example Query Return</h4>
+
+The results will list:
+- the date the log entry was created (i.e. when the action occured)
+- the user who logged in to the Sonrai platform 
+- and a message containing the Sonrai organization and user Id (should you need those finer details)
+
+```json title="Example Output" showLineNumbers
+{
+  "data": {
+    "SonraiAuditLogs": {
+      "count": 14,
+      "items": [
+        {
+          "createdDate": "2023-12-18T20:47:21.096+00:00",
+          "eventName": "UserLogin",
+          "actor": {
+            "name": "user.name"
+          },
+          "message": "User srn:dev12335969::SonraiUser/54f473b5-171c-4c91-8e19-dde26cdb975f logged in"
+        },
+        .....
+```
+
+</TabItem>
+</Tabs>
+</div>

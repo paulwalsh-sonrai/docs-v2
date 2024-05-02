@@ -1,0 +1,61 @@
+---
+title: Updating Existing SaaS Configurations
+sidebar_position: 2
+---
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+
+## Overview
+
+This guide provides Stack/StackSet update instructions for existing customers with AWS Accounts already onboarded.
+
+Rather than deleting artifacts in AWS/the Sonrai UI and repeating the entire onboarding process, your SaaS collector configuration can be more conveniently updated using the steps provided below.
+
+---
+
+## Updating Existing Stacks/StackSets
+
+1. [Sonrai Cloud Permissions Firewall UI] - Navigate to [**Manage** > **Accounts**](https://app.sonraisecurity.com/App/Onboarding)
+
+2. [AWS UI] - Click on the CloudFormation template link to generate an up-to-date version of the template
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/B3B2C174-21A1-4A9B-881C-E9B0BE783913.png)
+
+3. [AWS UI] - Copy the CloudFormation template's S3 URL
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/97E1D0A9-374B-4ED0-A285-4545F6D995C0.png)
+
+4. [AWS UI] - Navigate to **Stacks** and select your existing "<b>Sonrai-SaaS-Collector-roles</b>"-related stack
+
+5. [AWS UI] - In the "**Stack actions**" dropdown menu, click on "**Create change set for current stack**"
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/408B51D3-B1CE-4454-AF90-7462F80A454E.png)
+
+6. [AWS UI] - Select "**Replace current template**" and paste in the S3 URL from step 3 above, then click <orangebutton>Next</orangebutton>
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/41F5BD79-42B2-4908-96A1-835E8C83D10F.png)
+
+7. [AWS UI] - On "**Specify stack details**" (page 2), set the "**Permissions on Demand**" option to "**Yes**", then click <orangebutton>Next</orangebutton>
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/B5A84842-1D70-48E7-BBC5-340326654028.png)
+
+8. [AWS UI] - On "**Configure stack options**" (page 3), make no changes and click <orangebutton>Next</orangebutton>
+
+9. [AWS UI] - Validate your changes, check the "**Acknowledge**" box and click <orangebutton>Submit</orangebutton>
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/70E8C069-4F00-4278-99A4-5847705873C9.png)
+
+10. [AWS UI] - Click <orangebutton>Execute change set</orangebutton> (and confirm)
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/52707EDD-C29F-4448-96A5-CC39DDBDC876.png)
+
+11. [AWS UI] - Once complete, confirm each expected artifact is present: 
+- Policy
+- Role
+- StackSet
+
+![](/img/cpf/manage/accounts/aws/updating-existing-saas-configs/A0C94D97-AD94-4383-AD4C-D411AA8B687A.png)

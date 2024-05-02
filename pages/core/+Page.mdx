@@ -1,0 +1,170 @@
+---
+title: Removing Data from Sonrai
+sidebar_position: 2
+
+---
+
+<div className="printImg pagebreakaft">
+<img src="/img/sonrai_cover_page2.png"></img>
+<br/>
+<hr style={{'borderTop':'black solid 1px'}}></hr>
+<div style={{'textAlign':'center'}}><i>© {new Date().getFullYear()} Sonrai Security. All rights reserved.</i></div>
+</div>
+
+// import ReactPlayer from 'react-player'
+
+### Overview
+
+Sonrai continually maintains a state for all cloud resources that are added to and removed from your cloud accounts, and resources that are removed are updated to show "**active=false**". 
+
+However, if a cloud account is **removed from your collector**, or, the cloud account is **shutdown at the cloud provider** itself, Sonrai does not receive any audit actions to indicate that the resources in that cloud account have been deleted.  Periodic “discovery” tasks also cannot update these resources, since the cloud account no longer is monitored, or doesn’t exist, in order for discovery to query.
+
+When this occurs, resources from those cloud accounts will remain *orphaned* in Sonrai as “*active=true*”,  continue to show up in the UI, search results, and when included in policies, continue to **update tickets**. 
+
+To resolve this issue in the past, users could (and still can) contact support to have these resources updated in the graph, identified by the old account numbers, to have them updated as inactive resources. 
+
+Users can now resolve this issue themselves and mark these orphaned resources manually, as `active=false`. 
+
+------
+
+### Invalidate Cloud Resources When Removing an Account
+
+When removing an account, it is possible to invalidate all associated resources automatically. 
+
+This is a convenient housekeeping method of preventing inactive accounts' resources from triggering new tickets and displaying in search results.
+
+<img src="/img/advanced/removing-data-from-sonrai/6CFB6930-B9E0-4138-88E6-5D9CD31C2F9B.png"></img>
+
+---
+
+### Manual Resource Updates
+
+The process below will allow you to update these resources, effectively "invalidating" them, and eventually they will expire out of your Sonrai tenant. 
+
+#### Permission Requirements
+
+Only users with [administrator privileges](https://app.sonraisecurity.com/App/RoleManagement/RoleDetails?roleId=srn%3Asupersonrai%3A%3ASonraiRole%2FAdministrator) can execute this process
+
+------
+
+#### Using Advanced Search 
+
+The first method for removing account resources within the Sonrai platform is via [advanced search](https://app.sonraisecurity.com/App/GraphExplorer).
+
+- Navigate to [advanced search](https://app.sonraisecurity.com/App/GraphExplorer)
+
+![image-20220419131659438](/img/advanced/removing-data-from-sonrai/image-20220419131659438.png)
+
+- Use the following graphql Mutation (update search name) 
+
+```graphql showLineNumbers
+mutation [sampleName] {
+  CreateManualInvalidation(input: {
+    cloud: [String],
+    account: [String],
+    timestamp: [Integer],
+    includes: [
+      {
+        key: [String]
+        value: [String]
+      }
+    ]
+    excludes: [
+      {
+        key:[String]
+        value: [String]
+      }
+    ]
+    })
+  {
+    srn
+  }
+}
+```
+
+Input Variables
+
+| **Field**                                         | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **cloud: [type]***(required)*                     | The cloud type of the account you wish to remove. Accepted values: `aws`, `azure`,  or `gcp`                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **account: [id]***(required)*                     | The account, tenant, or project ID that you wish to invalidate for AWS, Azure or GCP                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **timestamp: [epoch-format integer]** <br/>*(required)* | Timestamp value, in *milliseconds*, is updated when a resource is detected in cloud activity, either in an action, or periodic API queries. Resources with timestamps older than the value will be removed.  To delete all current resources, set a timestamp value of "now" or an hour or two in the future.  *Note: If the resources are reported prior to the timestamp you specify, such as removing & re-adding an account later, it will not be re-activated until that timestamp has passed.* |
+| **includes: [ (key:"", value:"") ]** <br/>*(optional)*  | Includes is a key / value pair that allows for additional granularity to allow for removal of specific resources. Includes can be used in conjunction with Excludes for fine grain control.                                                                                                                                                                                                                                                                                                                |
+| **excludes: [ (key:"", value:"") ]** <br/>*(optional)*  | Excludes is a key / value pair that allows for additional granularity to allow for removal of specific resources. Excludes can be used in conjunction with Includes for fine grain control.                                                                                                                                                                                                                                                                                                                |
+
+------
+
+#### Examples
+
+Example Includes / Excludes: could be used together to remove EC2 resources from an account and exclude certain resources by tag or other attribute. 
+
+- Remove all IAM resources **except** Roles for account number 98723405613 in AWS older than February 7th, 2022 2:58:52 GMT.
+
+```graphql showLineNumbers
+mutation RemoveIAMExceptRolesExample {
+  CreateManualInvalidation(input: {
+    cloud: "aws",
+    account: "98723405613",
+    timestamp: 1657030384000,
+    includes: [{
+         key:"service"
+         value: "IAM"
+    }]
+    excludes: [{
+       key:"label"
+       value: "Role"
+    }]
+  })
+  {
+    srn
+  }
+}
+```
+
+- Remove all resources from a cancelled Azure subscription.  *Note - the wildcard on the includes field requires regex syntax, so use* `.*` *(dot star) instead of just*  `*` *(star) to match all resources in the subscription*
+
+```graphql showLineNumbers
+mutation RemoveCancelledAzureSubscriptionExample {
+  CreateManualInvalidation(input: {
+    cloud: "azure",
+    account: "1058b18f-2e72-44g9-9360-d84a4b2f76bd",
+    timestamp: "1657030384000"
+    includes: [{
+       key:"resourceId"
+       value: "/subscriptions/d5c05602-d449-4682-91e0-39e53b1d4hc0/.*"
+    }]
+  })
+  {
+    srn
+  }
+}
+```
+
+- Remove all resources from a terminated GCP project "sonrai-development"
+
+```graphql showLineNumbers
+mutation RemoveCancelledGCPProjectExample {
+  CreateManualInvalidation(input: {
+    cloud: "gcp",
+    account: "GCPProject|sonrai-development",
+    timestamp: "1657030419000"
+  })
+ {
+  srn
+ }
+}
+```
+
+------
+
+#### Reverting the process
+
+This process cannot be reverted, but, in the event it is performed in error, the next daily discovery update (daily at midnight GMT), any current resources will be re-enabled, as long as the account is re-added, or still monitored. 
+
+#### Scheduling
+
+One you submit the request, the background processes will scan for any matching resources and mark them as active=false. This background process runs constantly, and your request may be slightly delayed, but should run within a few minutes of being submitted.
+
+#### Auditing
+
+Users that execute this query will generate an audit under [User Activity](https://app.sonraisecurity.com/App/UserManagement/UserActivity).

@@ -1,0 +1,298 @@
+---
+sidebar_position: 1
+sidebar_label: "Intro: Services"
+title: "Intro: Services"
+---
+
+
+## Overview
+
+Unused [*enabled*] Services - a useful attack vector for threat actors to leverage! 
+
+Maybe you forgot to turn off AWS S3 when you were done testing storage solutions, or perhaps one of your overprivileged developers took the initative to test that out for you (unintentionally bypassing your change management process...)
+
+Sonrai's Cloud Permissions Firewall immediately notifies you whether you have any unused but enabled services and/or sensitive permissions access to review. 
+
+<div className="mermaid centermermaid noborder">
+
+```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'fontSize': '12pt',
+      'fontFamily': 'arial',
+      'tertiaryColor': '#E4E3FF',
+      'edgeLabelBackground': '#E4E3FF',
+      'clusterBkg':'#d1cfff'
+    }
+  }
+}%%
+flowchart LR
+classDef one fill:#7524A4,stroke:#000000,stroke-width:3px
+direction LR
+   subgraph 1["Services Page"]
+   Z("<font color=white><b>Determine <br/>Scope"):::one 
+   A("<font color=white><b>Exempt Identities</b>"):::one 
+   W("<font color=white><b>Protect Services</b>"):::one
+   T("<font color=white><b>Disable Services</b>"):::one
+   end
+    subgraph 0["Pending Changes Page"]
+    D("<font color=white><b>Review/Submit <br/>Your Pending Changes</b>"):::one
+    end
+    subgraph 2["Cloud Deployment"]
+    E("<font color=white><b>Deploy <br/>the Template</b>"):::one
+    end
+       Z --> A
+       A --> W
+       Z --> T
+       W --> D
+       T --> D
+       D --> E
+```
+
+</div>
+
+---
+
+## Scope 
+
+Initially, you may be wondering "*What am I looking at?..*", but a better question is "*What do I want to look at first?*", which is answered by the top left-hand dropdown providing the scope of the Service-related data in view. 
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/8DF64905-89CF-4B21-AB40-B9540DC46ABC.png"></img>
+<br/><br/>
+
+<div className="grid-container2">
+<div className="grid-child">
+From here you can select a: 
+- cloud type to narrow down the table results
+- logical grouping (the entire Organization, an Organizational Unit (OU), Accounts [nested under an OU])
+
+<u>Notes</u>: 
+- Scope convention:
+  - `<cloud type/>/<cloud native path/>` 
+- A scope of `/` refers to the entire cloud
+
+</div>
+<div className="grid-child">
+
+| Cloud Type | Path |
+| --- | --- |
+| AWS        |    `aws/<organization>/<organizational unit*>`, <br/> `aws/<organization>/<organizational unit*>/<account>`  | 
+| Azure    |      `azure/<tenant>/<management-group*>/<subscription>` | 
+| GCP       |     `gcp/<gcp-organization>/<folder*>/<project>` | 
+
+</div>
+</div>
+
+<br/>
+
+:::tip
+Your selected scope carries through to each action you take within the Services page (i.e. protections will only populate possibilities for the accounts/identities in the chosen scope)
+:::
+
+---
+
+## Hero Cards 
+
+Once your scope is adjusted, the hero cards (along with the services table) will adjust to reflect the drilldown number of: 
+- One Click Protection
+- IAM users and roles with excessive privilege 
+- Zombies 
+- Unused services 
+
+The hero cards provide a preview of the identities/services/etc. involved in Sonrai's recommended changes for these categories and a convenient single-click to action!
+
+<img src="/img/cpf/permissions-firewall/services/5830C856-7039-4493-B2B7-C48D60D19BE2.png"></img>
+
+<div className="grid-container2">
+<div className="grid-child">
+
+### IAM Users and Roles With Excessive Privilege
+
+<img className="noborder" src="/svg/cpf/intro-to-services/excess-priv-iam.svg"></img>
+
+Unused sensitive service access is a latent attack surface that enables attackers to gain footholds and move laterally within your organization.
+
+Examples involving sensitive service permissions:
+- creating a new EC2 VPC
+- updating the function code of a lambda
+- executing an ECS command
+
+<div className="cpfpurpleborder smallfont">
+<u>Reference</u>: See <a href="/cpf/permissions-firewall/services/hero-iam-excess-priv">here</a> for information on IAM users and roles with excessive privilege.
+</div>
+
+</div>
+<div className="grid-child">
+
+### Zombies
+
+<img className="noborder" src="/svg/cpf/intro-to-services/zombie.svg"></img>
+
+A Zombie is considered to be any identity (user, role, etc.) that has been unused for at least 90 days.
+
+Inactive but enabled Zombie identities provide the capability for threat actors to escalate privileges, move laterally, gain access to sensitive data, and more.
+
+Rather than deleting Zombie identities entirely, we opt to help you quarantine them so they remain present within your cloud but can no longer be used. Sometimes Zombies reanimate after some time, but are subject to requesting sensitive service access through Permissions on Demand (PoD).
+
+<div className="cpfpurpleborder smallfont">
+<u>Reference</u>: See <a href="/cpf/permissions-firewall/services/hero-zombies">here</a> for information on zombie identities.
+</div>
+
+</div>
+<div className="grid-child">
+
+### Unused Services 
+
+<img className="noborder" src="/svg/cpf/intro-to-services/services.svg"></img>
+
+Service blocks remove the ability for identities within your cloud to use any of the permissions associated with the service.
+
+Disabling service(s) can be regarded as a quick and simple method of reducing attack surface to lower the overall level of service-related risk(s) for your cloud. 
+
+<div className="cpfpurpleborder smallfont">
+<u>Reference</u>: See <a href="/cpf/permissions-firewall/services/hero-unused-services">here</a> for information on unused services.
+</div>
+
+</div>
+<div className="grid-child">
+
+### Regions [coming soon!]
+
+<img className="noborder" src="/svg/cpf/intro-to-services/regions.svg"></img>
+
+Unused but enabled regions provide attackers a vector for environmental movement and increase risk of compliance breach. 
+
+Regional blocks remove the ability for identities within your cloud to use any services within the disabled region(s).
+
+</div>
+</div>
+
+---
+
+## Service Status
+
+Key terms and concepts for each possible status you may encounter in the Services table: 
+
+<div className="cpfcardbody">
+<div className="grid-container2">
+<div class="cpfcard cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Unprotected</b>
+  <br/> 
+  All accounts [in scope] allow this service to be used without protection
+  <br/><br/>(i.e. <i>you have not implemented any blocks/protections through Sonrai's CPF yet</i>)
+</div>
+<div class="cpfcard cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Partially Protected</b>
+  <br/>
+  *Some* accounts [in scope] fully allow this service without protections 
+  <br/><br/>(*<i>some accounts may be blocked from using the service and some may use the service with protections in place</i>) 
+</div>
+<div class="cpfcard cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Protected</b>
+  <br/>
+  All accounts [in scope] are restricted with one or more cloud controls enabled 
+  <br/><br/>(*<i>all accounts have at least one cloud control in place (i.e. some accounts may be blocked from using the service and some may use the service with protections in place)</i>)
+</div>
+<div class="cpfcard cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Disabled</b>
+  <br/>
+  This service is disabled in all accounts 
+  <br/><br/>(i.e <i>the service cannot be used at all</i>)
+</div>
+</div>
+</div>
+<br/>
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/88B7E666-CD2E-405C-8AC1-111048046592.png"></img>
+
+:::tip
+Any status with `"(pending)"` indicates there are entries within the <a href="/cpf/permissions-firewall/pending-changes/pending-changes-intro">Pending Changes</a> page to review/action 
+:::
+
+---
+
+## Service Controls 
+
+
+<div className="grid-container2">
+<div className="grid-child">
+Service Controls are one or more blocks/protections that can be applied to the cloud to restrict or prevent actions or activities through:
+- *cloud-native frameworks*
+    - like Azure Policy or AWS Config
+</div>
+<div className="grid-child">
+These active controls dictate what can and cannot be done to and by the service within your cloud estate, like: 
+- who and what can access the service specifically in a sensitive manner 
+</div>
+</div>
+
+### Common Controls
+
+The number of Service Controls that apply to any given service will vary based on the nature of the service, but the most common controls you'll see are: 
+
+<div className="grid-container2">
+<div class="cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Cloud Service Block</b>
+  <br/> 
+  The first step to achieving an effective Least Privilege footprint in a cloud estate; limiting all permission(s) related to that service from use by any identity
+</div>
+<div class="cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Sensitive Service Access</b>
+  <br/>
+  The second step in achieving effective Least Privilege; enabling only those identities that have a proven need for this level of sensitive permissions access for the service
+</div>
+</div>
+<br/>
+
+:::info
+These types of blocks/protections do not remove previously created elements of your cloud, simply the ability for identities to make more. 
+
+For example, the sensitive permissions involved with the EC2 service could be controlled and removed from most [or perhaps all] users in a particular part of your cloud hierarchy. Removing this permission from your identities, however, does not remove any existing internet gateways!
+:::
+
+---
+
+## Service Actions 
+
+There are several options as per how you take action for each service, depending on your use case: 
+
+
+<div className="grid-container3">
+<div class="cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Disable</b>
+  <br/> 
+  Disable the service entirely so that no accounts within your organization can use it (i.e. all permissions related to this service are blocked for all identities within the selected account(s) [in scope])
+</div>
+<div class="cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Protect</b>
+  <br/>
+  The service is being moved into a protected state. Users can elect which cloud controls are to be enabled. 
+    - <b>Modify</b>: Once you click "**Protect**", the modify pane allows you to elect which cloud controls are to be enabled for the service. 
+    
+    [*If no cloud controls are turned on, the service stays as "**Unprotected**" status]
+</div>
+<div class="cpfsolidpurpleborder">
+  <b className="centerediconhead smallcaps largefont">Unprotect</b>
+  <br/>
+  The entire service will be unlocked for use by all identities that have grants to the service (zero cloud controls will be enabled in this state)
+</div>
+</div>
+<br/>
+
+:::info
+When we talk about a Service like AWS EC2, Azure Functions, etc. being "*protected*", we mean those that have one or more Service Control(s) applied. These would be services for which you clicked the "**Disable**"/"**Protect**" action at a given scope
+:::
+
+<br/>
+
+<img className="largeImg" src="/img/cpf/permissions-firewall/services/A07A3814-97BE-44D6-9FC0-895220DEAFF1.png"></img>
+<br/><br/>
+
+:::tip
+Check out our series of how-to pages next!
+- How-to: <a href="/cpf/permissions-firewall/services/how-to-service-protections#exempting-an-identity">Exempt Identities</a>
+- How-to: <a href="/cpf/permissions-firewall/services/how-to-disable-services">Disable Services</a>
+- How-to: <a href="/cpf/permissions-firewall/services/how-to-service-protections">Protect Services</a>
+:::

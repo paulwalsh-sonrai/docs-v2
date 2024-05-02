@@ -1,0 +1,60 @@
+---
+sidebar_position: 3
+sidebar_label: "Hero Card: Zombies"
+title: "Hero Card: Zombies"
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Overview
+
+<img className="noborder" src="/svg/cpf/intro-to-services/zombie.svg"></img>
+
+A Zombie, in the context of the Cloud Permissions Firewall, is considered to be any identity (user, role, etc.) that has been unused for at least 90 days.
+
+Inactive but enabled Zombie identities provide the capability for threat actors to escalate privileges, move laterally, gain access to sensitive data, and more.
+
+Rather than deleting Zombie identities entirely, we opt to help you quarantine them so they remain present within your cloud but can no longer be used. Quarantining consists of denying use to all permissions for which the identity has been assigned. 
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/97228AF1-1D57-4D87-9BF1-DD16F7189BC0.png"></img>
+
+Zombies may reanimate after some time (think quarterly reporting scripts, staff returning from paternity leave, etc.), but these identities are subject to requesting sensitive service access through <a href="/cpf/permissions-firewall/permissions-on-demand/permissions-on-demand-intro">Permissions on Demand (PoD)</a>.
+
+### Examples
+
+<div className="tabwrapper">
+<Tabs>
+<TabItem value="Example 1: When Outsiders Become Insiders" label="Example 1: When Outsiders Become Insiders"> 
+<h4 className="tabheader hiddenheader">Example 1: When Outsiders Become Insiders</h4>
+
+An attacker discovered an unused but enabled IAM identity that belonged to a former employee who had left the company months earlier. Due to poor offboarding practices within the organization, this identity was still active and had been granted elevated privileges during the employees' time at the company. The attacker bruteforced the credentials for the identity, trying common passwords and variants until the role was successfully accessed.
+
+The identity had access to various critical systems, including databases containing sensitive financial data and other customer information. The attacker began exfiltrating this data and attempted to disrupt the company's services by altering configurations and deploying malicious scripts.
+
+</TabItem>
+<TabItem value="Example 2: When Insiders Cause Problems" label="Example 2: When Insiders Cause Problems"> 
+<h4 className="tabheader hiddenheader">Example 2: When Insiders Cause Problems</h4>
+
+One day, the development team encountered a puzzling issue: performance problems and unexplained service outages affecting several of the company's key applications. Initially, the team suspected a bug in the recent code deployment and began investigating potential causes.
+
+After digging deeper, they discovered unexpected changes to configurations and security settings in the AWS environment. These changes seemed to originate from an inactive IAM identity belonging to a former third-party contractor who had left the company several months earlier. The identity had been granted elevated privileges during the contractor's time but had remained enabled long after their departure.
+
+After extensive investigation, an insider threat was determined to be at fault for the disruption, trying to create ways into the organization for employees of a competitor!
+
+</TabItem>
+</Tabs>
+</div>
+
+---
+
+## Quarantine Your Zombies 
+
+
+Select the scope at which you want to take action and click the preview button to see the changes you are about to make:
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/5ABF26EC-02C1-45E3-BCFB-39CC46B1260F.png"></img>
+
+When ready, click the <button className="cpfgreenbutton">Quarantine</button> button to immediately apply quarantine to those identities in your cloud:
+
+<img src="/img/cpf/permissions-firewall/services/hero-cards/70EE732F-5AF6-4C4B-B798-523BFA13D3DD.png"></img>

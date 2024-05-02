@@ -1,0 +1,248 @@
+---
+title: Single Sign-on (SSO)
+sidebar_position: 3
+---
+
+
+## Overview
+
+Sonrai’s authentication service supports the use of SSO via the [Auth0.com](http://Auth0.com) platform. Organizations who wish to enable SSO and have their Sonrai users authenticate against their internal authentication services can reach out to the Support team at Sonrai for enablement.
+
+<div className="grid-container2">
+<div className="grid-child 1">
+Sonrai supports:
+<li>SAML</li>
+<li>OpenID Connect</li> 
+<li>Active Directory/LDAP generic protocols</li>
+</div>
+<div className="grid-child 2">
+In addition, Sonrai supports specific authentication options with:
+<li>Google Workspace</li>
+<li>Microsoft Azure AD</li>
+<li>ADFS</li>
+<li>Ping Federate</li>
+</div>
+</div>
+
+<div className="cpfreference smallfont">
+<div className="refbody">
+<Icon icon="fa-solid fa-user" ></Icon> <u>Reference</u>: See <a href="https://auth0.com/docs/authenticate/identity-providers/enterprise-identity-providers/enable-enterprise-connections">Auth0's SSO documentation</a> for more detailed information on supported authentication services.
+</div>
+</div>
+
+---
+
+## SSO Requirements 
+
+### Supported Authentication Platforms
+
+#### SAML 
+
+By way of Auth0, Sonrai's authentication service supports a number of external SSO environments including generic SAML authentication for:
+  - Okta
+  - PingFed
+  - Azure AD / ADFS
+  - Google Workspace (G Suite)  
+
+
+### Service Provider (SP) Initiated Logins Only
+
+Sonrai currently only supports SP (service provider) authentication, so users must navigate to https://app.sonraisecurity.com/ to initiate a login and are then directed to their SSO platform for authentication. 
+
+:::info
+Granular control of identities via SSO is limited to integrations through AWS Identity Center. IdP-initiated sessions, such as launching an application icon from Azure Apps & Okta, are not currently. supported
+:::
+
+
+### Authentication Only
+
+Users who can authenticate into your SSO service must still be created as a user (with assigned permissions) in Sonrai, before they can login to Sonrai. 
+
+
+### Valid Email Addresses in Authentication Service
+
+A valid email address is required in the login session details via a field named “email”. (This is generally a standard field, but SSO configurations should ensure to include this field).  
+
+:::info
+Users who are added/invited to Sonrai are invited by their corporate email address and this field should align with the address used in the invitation. 
+:::
+
+---
+
+## Enabling SSO
+
+When enabling SSO for authentication, the following settings are provided by Sonrai to your SSO team to enable the service:
+
+<table>
+<thead>
+<tr>
+<th>Setting Name</th>
+<th>Value/Description</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>SSO Connection Name</td>
+<td>The convention for connection name is your Sonrai tenant name + Sonrai + SSO.<br/>Example: <code>ACMESonraiSSO</code></td></tr>
+<tr><td>Entity ID</td>
+<td><code>urn:auth0:sonraisecurity:MyCorpSonraiSSO</code></td></tr>
+<tr><td>Assertion Consumer Service Callback URL</td>
+<td><code>https://login.sonraisecurity.com/login/callback?connection=ACMESonraiSSO</code></td></tr>
+<tr><td>SSO Signing Certificate</td>
+<td>Outgoing authentication requests are <a href="/img/manage/users/sonraisecurity.pem">signed by this certificate.</a></td></tr>
+</tbody>
+</table>
+<br/>
+In return, the following is required by Sonrai from your SSO team:<br/>
+<br/>
+<table>
+<thead>
+<tr>
+<th>Setting Name</th>
+<th>Value/Description</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Sign In URL</td>
+<td>The login address of your SSO service</td></tr>
+<tr><td>Signout URL</td>
+<td>(Optional)</td></tr>
+<tr><td>X.509 Certificate</td>
+<td>From the SSO platform (often included in the metadata xml file export)</td></tr>
+<tr><td>IdP Domains</td>
+<td>The email address domains that should redirect to your SSO platform, such as <code>sonraisecurity.com</code> or <code>yourcompany.tld</code></td></tr>
+<tr><td>Field/Assertion</td>
+<td>The field <code>email</code> must be <b>included</b> and it must match the email address that was used to invite the user to Sonrai</td></tr>
+</tbody>
+</table>
+
+
+:::info
+Upon navigating to https://app.sonraisecurity.com to login via SSO for the first time, a number of users have voiced that after authenticating in SSO they are returned to the main login form. (This occasionally happens when your SSO and internal auth user are combined).
+
+Generally speaking, waiting a minute and attempting to log in again fixes the issue. 
+:::
+
+------
+
+## Common SSO Configuration Questions
+
+<div className="grid-container2">
+<div className="grid-child 1">
+<div className="bluecard">
+<p><b>Q: Does the application support Service Provider (SP) initiated SSO, Identity Provider (IdP) initiated SSO, or both?</b></p>
+<p><b>A</b>: Only SP initiated logins are supported.</p>
+</div>
+</div>
+<div className="grid-child 2" style={{'marginLeft': '10px'}}>
+<div className="bluecard" style={{'height': '100%'}}>
+<p><b>Q: Does the application support automatic SAML metadata updates?</b></p>
+<p><b>A</b>: No, SAML metadata updates are not supported.</p>
+</div>
+</div>
+</div>
+
+<br/>
+
+<div className="grid-container2">
+<div className="grid-child 1">
+<div className="bluecard">
+<p><b>Q: What is the application session time?</b></p>
+<p><b>A</b>: Assuming this is an idle session timeout, that is set to 15 minutes for both locally and SSO authenticated users.</p>
+</div>
+</div>
+<div className="grid-child 2" style={{'marginLeft': '10px'}}>
+<div className="bluecard">
+<p><b>Q: Federation parameter: What is the Sign-on URL?</b></p>
+<p><b>A</b>: Sign-on URL is <code>https://app.sonraisecurity.com/</code></p>
+</div>
+</div>
+</div>
+
+<br/>
+
+<div className="grid-container2">
+<div className="grid-child 1">
+<div className="bluecard" style={{'height': '100%'}}>
+<p><b>Q: Can non-email enabled addresses be used?</b></p>
+<p><b>A</b>: No. Only valid addresses which can receive email are supported.</p>
+</div>
+</div>
+<div className="grid-child 2" style={{'marginLeft': '10px'}}>
+<div className="bluecard">
+<p><b>Q: What signing certificate is used for outgoing requests?</b></p>
+<p><b>A</b>: Outgoing authentication requests are <a href="/img/manage/users/sonraisecurity.pem">signed by this certificate.</a></p>
+</div>
+</div>
+</div>
+
+<br/>
+  
+<div className="grid-container2">
+<div className="grid-child 1">
+<div className="bluecard">
+<p><b>Q: What algorithms are used in your outgoing SSO requests?</b></p>
+<p><b>A</b>: <li>Sign Request Algorithm is <code>RSA-SHA256</code></li>
+  <li>Sign Request Algorithm Digest is <code>SHA256</code></li></p>
+</div>
+</div>
+<div className="grid-child 2" style={{'marginLeft': '10px'}}>
+<div className="bluecard">
+<p><b>Q: Is the Assertion Consumer Service (ACS) URL included in the sign-on request?</b></p>
+<p><b>A</b>: No, the ACS URL is not included in the sign-on request. The EntityID is included, which is associated with the appropriate ACS URL in the IdP configuration.</p>
+</div>
+</div>
+</div>
+
+<br/>
+
+<div className="grid-container2">
+<div className="grid-child 1">
+<div className="bluecard">
+<p><b>Q: What is the URL for your SP login authentication platform?</b></p>
+<p><b>A</b>: The base URL is <code>https://login.sonraisecurity.com/login/callback</code><br/>
+  Tenant-specific ACS URLs will include the EntityID, like <code>https://login.sonraisecurity.com/login/callback?connection=MyCorpSonraiSSL</code></p>
+</div>
+</div>
+<div className="grid-child 2" style={{'marginLeft': '10px'}}>
+<div className="bluecard" style={{'height': '100%'}}>
+<p><b>Q: Is the Assertion Consumer Service (ACS) URL included in the sign-on request?</b></p>
+<p><b>A</b>: No, the ACS URL is not included in the sign-on request. The EntityID is included, which is associated with the appropriate ACS URL in the IdP configuration.</p>
+</div>
+</div>
+</div>
+
+<br/>
+
+<div className="grid-container2">
+<div className="grid-child 1">
+<div className="bluecard">
+<p><b>Q: If we use SSO, is the Sonrai MFA still in effect?</b></p>
+<p><b>A</b>: When SSO is enabled, the sonrai-internal MFA is disabled and all authentication is managed by the SSO service, including password strength requirements & MFA. Your users will only be prompted for MFA on through your SSO service. </p>
+<img src="/img/manage/users/image-20220415155407605.png"></img>
+</div>
+</div>
+<div className="grid-child 2" style={{'marginLeft': '10px'}}>
+<div className="bluecard" style={{'height': '100%'}}>
+<p><b>Q: Does Sonrai provide SSO only enforcement, ie. can not bypass with local authentication</b></p>
+<p><b>A</b>: SSO for Sonrai is mapped by email domain, like “example.com”. When SSO is configured, all users from that domain are forced to use SSO, and local authentication is no longer available. In the event of an SSO platform failure or outage, those users will not be able to login to Sonrai until the SSO configuration is disabled upon request from the customer.</p>
+</div>
+</div>
+</div>
+
+<br/>
+
+<div className="grid-container2">
+<div className="grid-child 2" >
+<div className="bluecard">
+<p><b>Q: We are using Okta for our SSO IDP, but after adding the “email” attribute, we’re still not able to login?</b></p>
+<p><b>A</b>: Okta supports using either <code>Profile Editor</code> or <code>SAML Integration / Attribute Statements</code> for the addition of attributes. You must use <code>SAML Integration/Attribute Statements</code> option for adding the <code>email</code> address field to your SAML configuration. Using “<b>Profile Editor</b>” does not properly encode the additional field.</p>
+<img src="/img/manage/users/image-20220415155407605.png"></img>
+</div>
+</div>
+<div className="grid-child 1" style={{'marginLeft': '10px'}}>
+<div className="bluecard" style={{'height': '100%'}}>
+<p><b>Q: Will SAML requests be sent with a <code>REDIRECT</code> or <code>POST</code> binding?</b></p>
+<p><b>A</b>: Both <b>HTTP-Redirect</b> & <b>HTTP-POST</b> request bindings are available, but the default is to use <b>HTTP-POST</b></p>
+</div>
+</div>
+</div>
