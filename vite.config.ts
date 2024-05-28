@@ -1,14 +1,14 @@
-import react from '@vitejs/plugin-react-swc'
-import mdx from '@mdx-js/rollup'
-import vike from 'vike/plugin'
-import { UserConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc';
+import mdx from '@mdx-js/rollup';
+import vike from 'vike/plugin';
+import { UserConfig } from 'vite';
 
 export default {
   plugins: [
     vike({
-      prerender: true
+      prerender: true,
     }),
     mdx(),
-    react()
-  ]
-} as UserConfig
+    react(),
+  ],
+} as UserConfig;

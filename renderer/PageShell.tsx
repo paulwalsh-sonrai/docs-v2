@@ -19,15 +19,15 @@ async function getSidebarConfig() {
   let sidebarConfig = [];
 
   for (const path of files) {
-    const filePath = path.replace('../pages/', '').replace('/Page.mdx', ''); // Remove the '../pages/' prefix
+    const filePath = path.replace('../pages/', '').replace('/+Page.mdx', ''); // Remove the '../pages/' prefix
     const segments = filePath.split('/');
 
     let currentLevel = sidebarConfig;
-
+    let href = '';
     segments.forEach((segment, index) => {
       const isLastSegment = index === segments.length - 1;
       const isDirectory = !isLastSegment; // Last segment is a file, not a directory
-
+      href = href + `/${segment}`;
       let existingItem = currentLevel.find((item) => item.label === segment);
 
       if (!existingItem) {
@@ -35,6 +35,7 @@ async function getSidebarConfig() {
           type: isDirectory ? 'category' : 'doc',
           label: segment,
           items: isDirectory ? [] : null,
+          href: structuredClone(href),
         };
         currentLevel.push(existingItem);
       }
@@ -92,20 +93,22 @@ function Sidebar({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const renderSidebarItems = (items) => {
-    return items?.length
-      ? items.map((item, index) => {
-          if (item.type === 'category') {
-            return (
-              <SubMenu key={index} title={item.label} label={item.label}>
-                {renderSidebarItems(item.items)}
-              </SubMenu>
-            );
-          } else {
-            return <MenuItem key={index}>{item.label}</MenuItem>;
-          }
-        })
-      : [];
+  const renderSidebarItems = (items = []) => {
+    return items.map((item, index) => {
+      if (item.type === 'category') {
+        return (
+          <SubMenu key={index} title={item.label} label={item.label}>
+            {renderSidebarItems(item.items)}
+          </SubMenu>
+        );
+      } else {
+        return (
+          <MenuItem key={index}>
+            <Link href={item.href}>{item.label} </Link>
+          </MenuItem>
+        );
+      }
+    });
   };
 
   return (

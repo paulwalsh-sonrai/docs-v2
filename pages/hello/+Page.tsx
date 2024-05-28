@@ -1,11 +1,11 @@
-export default Page
+export default Page;
 
-import React from 'react'
-import { useData } from '../../renderer/useData'
-import type { Data } from './+data'
+import React from 'react';
+import { useData } from '../../renderer/useData';
+import type { Data } from './+data';
 
 function Page() {
-  const { name } = useData<Data>()
+  const { name } = useData<Data>();
   return (
     <>
       <h1>Hello</h1>
@@ -21,8 +21,9 @@ function Page() {
         </li>
       </ul>
       <p>
-        Parameterized routes can be defined by exporting a route string in <code>+route.ts</code>.
+        Parameterized routes can be defined by exporting a route string in{' '}
+        <code>+route.ts</code>.
       </p>
     </>
-  )
+  );
 }
