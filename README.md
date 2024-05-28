@@ -23,7 +23,7 @@ Our current Docusaurus documentation portal, presents several challenges:
  - Scalability Issues: As our documentation grows, the cookie-cutter nature of Docusaurus limits customization and scalability. This has been revealed during Purple, the docusaurous multi instance just isnt great and its been an absolute headache to deal with.
  - Incredibly Slow Build Time: The build time for the documentation portal is incredibly slow, this makes.
  - Terrible Lighthouse Score: The current portal scores poorly on Lighthouse (mid 30s on average with SEO disabled), i think that can be improved and would be much easier.
- - Current Repo includes a ton of jank code to overide certain things so that we can have 2 instances of docs portal in 1 project. This makes it more and more fragile.
+ - Current Repo includes a ton of jank code to overide certain things so that we can have 2 instances of docs portal in 1 project. This makes it more and more fragile. Also the folder structure is not well organized but we've just kinda stuck with it because it works.
 
 
 ## Solution
@@ -31,9 +31,10 @@ We propose to develop a new documentation portal that leverages VikeJS and ViteJ
 
  - Minimize turnaround when developers need to get involved.
  - Allow for quicker updates when developing content. Build time using vite is like < 5s and it has really good HMR (Hot Module Repload)
- - Enhance customization and scalability to better fit our needs
+ - Enhance customization and scalability to better fit our needs, this has primitives build in for cool stuff like animating page transitions.
  - We will have complete access to the router which was one of the reasons why the old docs needed alot of the jank code it did.
  - Embedding sonrai frontend components will be much easier if we ever want to.
+  
   
 https://vitejs.dev/
 https://vike.dev/
@@ -44,10 +45,10 @@ https://vike.dev/
 
 
 ## TODO
-[X] Create project skeleton (renderer, mdx config, vite config)
-[X] Port some MDX files from docs portal and ensure the file system router can pick them up.
-[ ] Port mermaid theme from the old docs portal.
-[ ] Port static assets.
-[ ] Configure lunar search.
-[ ] Configure production build.
-[ ] Dev Test deployment with the new build
+ - [X] Create project skeleton (renderer, mdx config, vite config)
+ - [X] Port some MDX files from docs portal and ensure the file system router can pick them up.
+ - [ ] Port mermaid theme from the old docs portal ( 1- 2 days)
+ - [ ] Port static assets. (1 day)
+ - [ ] Configure lunar search. ( 1 - 2 days)
+ - [ ] Configure production build. (1 - 2 day)
+ - [ ] Dev Test deployment with the new build. (TBD could be quick)
